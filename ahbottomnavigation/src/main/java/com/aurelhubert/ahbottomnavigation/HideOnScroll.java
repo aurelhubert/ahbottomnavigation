@@ -21,6 +21,7 @@ package com.aurelhubert.ahbottomnavigation;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.animation.LinearInterpolator;
 
 public final class HideOnScroll {
@@ -28,10 +29,12 @@ public final class HideOnScroll {
     public static class ShowHideBottomBarOnScrollingListener extends RecyclerView.OnScrollListener {
 
         private AHBottomNavigation bottomBar;
+        private Toolbar toolbar;
         private State state;
 
-        public ShowHideBottomBarOnScrollingListener(AHBottomNavigation bottomBar) {
+        public ShowHideBottomBarOnScrollingListener(AHBottomNavigation bottomBar, Toolbar toolbar) {
             this.bottomBar = bottomBar;
+            this.toolbar = toolbar;
             this.state = new State();
         }
 
@@ -56,13 +59,36 @@ public final class HideOnScroll {
                     .setDuration(50);
         }
 
+
+        /**
+         * Bottom bar animation show
+         */
+        private void toolbarAnimateShow() {
+            toolbar.animate()
+                    .translationY(0)
+                    .setInterpolator(new LinearInterpolator())
+                    .setDuration(50);
+        }
+
+        /**
+         * Bottom bar animation hide
+         */
+        private void toolbarAnimateHide() {
+            toolbar.animate()
+                    .translationY(-toolbar.getHeight())
+                    .setInterpolator(new LinearInterpolator())
+                    .setDuration(50);
+        }
+
         @Override
         public final void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 if (state.scrollingOffset > 0) {
                     bottomBarAnimateHide();
+                    toolbarAnimateHide();
                 } else if (state.scrollingOffset < 0) {
                     bottomBarAnimateShow();
+                    toolbarAnimateShow();
                 }
             }
         }
@@ -73,7 +99,9 @@ public final class HideOnScroll {
             bottomBar.animate().cancel();
             if (dy > 0) {
                 bottomBarAnimateHide();
+                toolbarAnimateHide();
             } else if (dy < 0) {
+                bottomBarAnimateShow();
                 bottomBarAnimateShow();
             }
         }

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
+import android.support.v7.widget.Toolbar;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
@@ -30,6 +31,8 @@ public class DemoActivity extends AppCompatActivity {
 	 */
 	private void initUI() {
 
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
 		RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 		final AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
 		final ArrayList<AHBottomNavigationItem> items = new ArrayList<>();
@@ -60,6 +63,6 @@ public class DemoActivity extends AppCompatActivity {
 		recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 		MyAdapter mAdapter = new MyAdapter(itemsData);
 		recyclerView.setAdapter(mAdapter);
-		recyclerView.addOnScrollListener(new HideOnScroll.ShowHideBottomBarOnScrollingListener(bottomNavigation));
+		recyclerView.addOnScrollListener(new HideOnScroll.ShowHideBottomBarOnScrollingListener(bottomNavigation, toolbar));
 	}
 }
