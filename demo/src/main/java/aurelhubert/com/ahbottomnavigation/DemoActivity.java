@@ -3,14 +3,19 @@ package aurelhubert.com.ahbottomnavigation;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
+import android.support.v7.widget.Toolbar;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.aurelhubert.ahbottomnavigation.HideOnScroll;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DemoActivity extends AppCompatActivity {
 
@@ -26,10 +31,10 @@ public class DemoActivity extends AppCompatActivity {
 	 */
 	private void initUI() {
 
-		final SwitchCompat switchColored = (SwitchCompat) findViewById(R.id.home_switch_colored);
-		final SwitchCompat switchFourItems = (SwitchCompat) findViewById(R.id.home_switch_four_items);
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+		RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 		final AHBottomNavigation bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
-		final TextView currentItem = (TextView) findViewById(R.id.home_current_item);
 		final ArrayList<AHBottomNavigationItem> items = new ArrayList<>();
 
 		AHBottomNavigationItem item1 = new AHBottomNavigationItem("Label One", R.drawable.ic_maps_place, Color.parseColor("#455C65"));
@@ -45,34 +50,19 @@ public class DemoActivity extends AppCompatActivity {
 		bottomNavigation.addItems(items);
 		bottomNavigation.setAccentColor(Color.parseColor("#F63D2B"));
 		bottomNavigation.setInactiveColor(Color.parseColor("#747474"));
-		bottomNavigation.setAHBottomNavigationListener(new AHBottomNavigation.AHBottomNavigationListener() {
-			@Override
-			public void onTabSelected(int position) {
-				//Toast.makeText(DemoActivity.this, "Select: " + position, Toast.LENGTH_SHORT).show();
-				currentItem.setText("Current item: " + position);
-			}
-		});
+		// Use colored navigation with circle reveal effect
+		bottomNavigation.setColored(true);
 
-		switchColored.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				bottomNavigation.setColored(isChecked);
-			}
-		});
 
-		switchFourItems.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				if (isChecked) {
-					bottomNavigation.addItem(item4);
-					bottomNavigation.addItem(item5);
-				} else {
-					bottomNavigation.removeAllItems();
-					bottomNavigation.addItems(items);
-				}
-			}
-		});
+		List<ItemData> itemsData = new ArrayList<ItemData>();
+		for(int i = 0; i < 50; i++)
+		{
+			itemsData.add(new ItemData("Text " + i));
+		}
 
+		recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+		MyAdapter mAdapter = new MyAdapter(itemsData);
+		recyclerView.setAdapter(mAdapter);
+		recyclerView.addOnScrollListener(new HideOnScroll.ShowHideBottomBarOnScrollingListener(bottomNavigation, toolbar));
 	}
-
 }
