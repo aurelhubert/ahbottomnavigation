@@ -46,7 +46,7 @@ public final class HideOnScroll {
             bottomBar.animate()
                     .translationY(0)
                     .setInterpolator(new LinearInterpolator())
-                    .setDuration(50);
+                    .setDuration(200);
         }
 
         /**
@@ -56,7 +56,7 @@ public final class HideOnScroll {
             bottomBar.animate()
                     .translationY(bottomBar.getHeight())
                     .setInterpolator(new LinearInterpolator())
-                    .setDuration(50);
+                    .setDuration(200);
         }
 
 
@@ -67,7 +67,7 @@ public final class HideOnScroll {
             toolbar.animate()
                     .translationY(0)
                     .setInterpolator(new LinearInterpolator())
-                    .setDuration(50);
+                    .setDuration(200);
         }
 
         /**
@@ -77,7 +77,7 @@ public final class HideOnScroll {
             toolbar.animate()
                     .translationY(-toolbar.getHeight())
                     .setInterpolator(new LinearInterpolator())
-                    .setDuration(50);
+                    .setDuration(200);
         }
 
         @Override
