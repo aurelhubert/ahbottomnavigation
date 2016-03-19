@@ -102,7 +102,7 @@ public final class HideOnScroll {
                 toolbarAnimateHide();
             } else if (dy < 0) {
                 bottomBarAnimateShow();
-                bottomBarAnimateShow();
+                toolbarAnimateShow();
             }
         }
 
