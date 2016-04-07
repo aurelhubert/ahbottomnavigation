@@ -97,6 +97,7 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 
 
 	private void handleDirection(V child, int scrollDirection) {
+		if(!scrollingEnabled) return;
 		if (scrollDirection == ScrollDirection.SCROLL_DIRECTION_DOWN && hidden) {
 			hidden = false;
 			animateOffset(child, 0);
