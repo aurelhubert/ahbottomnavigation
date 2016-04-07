@@ -2,7 +2,9 @@ package com.aurelhubert.ahbottomnavigation;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.os.Build;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
@@ -24,6 +26,9 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 	private ViewPropertyAnimatorCompat mTranslationAnimator;
 	private TabLayout mTabLayout;
 	private View mTabsHolder;
+	private int mSnackbarHeight = -1;
+	private boolean scrollingEnabled = true;
+	private final BottomNavigationWithSnackbar mWithSnackBarImpl = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? new LollipopBottomNavWithSnackBarImpl() : new PreLollipopBottomNavWithSnackBarImpl();
 
 	public AHBottomNavigationBehavior() {
 		super();
@@ -46,20 +51,40 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 		return layoutChild;
 	}
 
+
+
+	@Override
+	public boolean layoutDependsOn(CoordinatorLayout parent, V child, View dependency) {
+		mWithSnackBarImpl.updateSnackbar(parent, dependency, child);
+		return dependency instanceof Snackbar.SnackbarLayout;
+	}
+
+	@Override
+	public void onDependentViewRemoved(CoordinatorLayout parent, V child, View dependency) {
+		updateScrollingForSnackbar(dependency, child, true);
+		super.onDependentViewRemoved(parent, child, dependency);
+	}
+
+	private void updateScrollingForSnackbar(View dependency, View child, boolean enabled) {
+		if (dependency instanceof Snackbar.SnackbarLayout) {
+			scrollingEnabled = enabled;
+			if (ViewCompat.getTranslationY(child) != 0) {
+				ViewCompat.setTranslationY(child, 0);
+			}
+		}
+	}
+
+	@Override
+	public boolean onDependentViewChanged(CoordinatorLayout parent, V child, View dependency) {
+		updateScrollingForSnackbar(dependency, child, false);
+		return super.onDependentViewChanged(parent, child, dependency);
+	}
 	private TabLayout findTabLayout(View child) {
 		if (mTabLayoutId == 0) return null;
 		return (TabLayout) child.findViewById(mTabLayoutId);
 	}
 
-	@Override
-	public boolean onDependentViewChanged(CoordinatorLayout parent, V child, View dependency) {
-		return super.onDependentViewChanged(parent, child, dependency);
-	}
 
-	@Override
-	public void onDependentViewRemoved(CoordinatorLayout parent, V child, View dependency) {
-		super.onDependentViewRemoved(parent, child, dependency);
-	}
 
 	@Override
 	public void onNestedVerticalOverScroll(CoordinatorLayout coordinatorLayout, V child, @ScrollDirection int direction, int currentOverScroll, int totalOverScroll) {
@@ -72,6 +97,7 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 
 
 	private void handleDirection(V child, int scrollDirection) {
+		if(!scrollingEnabled) return;
 		if (scrollDirection == ScrollDirection.SCROLL_DIRECTION_DOWN && hidden) {
 			hidden = false;
 			animateOffset(child, 0);
@@ -137,5 +163,52 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 	public void resetOffset(V view) {
 		Log.d("AHBottomNavigation", "restoreBottomNavigation");
 		animateOffset(view, 0);
+	}
+
+
+
+
+	private interface BottomNavigationWithSnackbar {
+		void updateSnackbar(CoordinatorLayout parent, View dependency, View child);
+	}
+
+	private class PreLollipopBottomNavWithSnackBarImpl implements BottomNavigationWithSnackbar {
+
+		@Override
+		public void updateSnackbar(CoordinatorLayout parent, View dependency, View child) {
+			if (dependency instanceof Snackbar.SnackbarLayout) {
+				if (mSnackbarHeight == -1) {
+					mSnackbarHeight = dependency.getHeight();
+				}
+
+				int targetPadding = child.getMeasuredHeight();
+
+				ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) dependency.getLayoutParams();
+				layoutParams.bottomMargin = targetPadding;
+				child.bringToFront();
+				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+					child.getParent().requestLayout();
+					((View) child.getParent()).invalidate();
+				}
+
+			}
+		}
+	}
+
+	private class LollipopBottomNavWithSnackBarImpl implements BottomNavigationWithSnackbar {
+
+		@Override
+		public void updateSnackbar(CoordinatorLayout parent, View dependency, View child) {
+			if (dependency instanceof Snackbar.SnackbarLayout) {
+				if (mSnackbarHeight == -1) {
+					mSnackbarHeight = dependency.getHeight();
+				}
+				int targetPadding = (mSnackbarHeight +
+						child.getMeasuredHeight());
+				dependency.setPadding(dependency.getPaddingLeft(),
+						dependency.getPaddingTop(), dependency.getPaddingRight(), targetPadding
+				);
+			}
+		}
 	}
 }

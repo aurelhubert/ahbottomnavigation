@@ -32,6 +32,7 @@ import java.util.List;
  * AHBottomNavigationLayout
  * Material Design guidelines : https://www.google.com/design/spec/components/bottom-navigation.html
  */
+@CoordinatorLayout.DefaultBehavior(AHBottomNavigationBehavior.class)
 public class AHBottomNavigation extends FrameLayout {
 
 	// Static
