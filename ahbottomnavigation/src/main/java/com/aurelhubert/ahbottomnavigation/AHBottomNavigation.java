@@ -482,10 +482,12 @@ public class AHBottomNavigation extends FrameLayout {
 					anim.addListener(new Animator.AnimatorListener() {
 						@Override
 						public void onAnimationStart(Animator animation) {
+							backgroundColorView.setVisibility(VISIBLE);
 						}
 
 						@Override
 						public void onAnimationEnd(Animator animation) {
+							backgroundColorView.setVisibility(INVISIBLE);
 							setBackgroundColor(items.get(itemIndex).getColor(context));
 						}
 
@@ -588,10 +590,12 @@ public class AHBottomNavigation extends FrameLayout {
 					anim.addListener(new Animator.AnimatorListener() {
 						@Override
 						public void onAnimationStart(Animator animation) {
+                            backgroundColorView.setVisibility(VISIBLE);
 						}
 
 						@Override
 						public void onAnimationEnd(Animator animation) {
+                            backgroundColorView.setVisibility(INVISIBLE);
 							setBackgroundColor(items.get(itemIndex).getColor(context));
 						}
 
