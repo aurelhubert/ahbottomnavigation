@@ -37,6 +37,7 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 	private boolean fabBottomMarginInitialized = false;
 	private float targetOffset = 0, fabTargetOffset = 0, fabDefaultBottomMargin = 0, snackBarY = 0;
 	private boolean behaviorTranslationEnabled = true;
+	private OnYTranslationListener yTranslationListener;
 
 	/**
 	 * Constructor
@@ -179,6 +180,10 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 						p.setMargins(p.leftMargin, p.topMargin, p.rightMargin, (int) fabTargetOffset);
 						floatingActionButton.requestLayout();
 					}
+
+					if (yTranslationListener != null) {
+						yTranslationListener.onYTranslation((int) (-view.getTranslationY() + snackBarY));
+					}
 				}
 			});
 			translationAnimator.setInterpolator(INTERPOLATOR);
@@ -218,6 +223,10 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 					p.setMargins(p.leftMargin, p.topMargin, p.rightMargin, (int) fabTargetOffset);
 					floatingActionButton.requestLayout();
 				}
+
+				if (yTranslationListener != null) {
+					yTranslationListener.onYTranslation((int) (-child.getTranslationY() + snackBarY));
+				}
 			}
 		});
 	}
@@ -247,6 +256,13 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 	 */
 	public void setBehaviorTranslationEnabled(boolean behaviorTranslationEnabled) {
 		this.behaviorTranslationEnabled = behaviorTranslationEnabled;
+	}
+
+	/**
+	 * Add listener for y translation
+	 */
+	public void setYTranslationListener(OnYTranslationListener yTranslationListener) {
+		this.yTranslationListener = yTranslationListener;
 	}
 
 	/**
@@ -292,6 +308,10 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 							fabTargetOffset = fabDefaultBottomMargin - child.getTranslationY() + snackBarY;
 							p.setMargins(p.leftMargin, p.topMargin, p.rightMargin, (int) fabTargetOffset);
 							floatingActionButton.requestLayout();
+
+							if (yTranslationListener != null) {
+								yTranslationListener.onYTranslation((int) (-child.getTranslationY() + snackBarY));
+							}
 						}
 					}
 				});
@@ -327,4 +347,9 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 			}
 		}
 	}
+
+	public interface OnYTranslationListener {
+		void onYTranslation(int y);
+	}
+
 }

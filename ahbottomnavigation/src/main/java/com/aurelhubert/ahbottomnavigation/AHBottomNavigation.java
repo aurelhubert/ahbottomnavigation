@@ -30,6 +30,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationBehavior.OnYTranslationListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +39,8 @@ import java.util.List;
  * AHBottomNavigationLayout
  * Material Design guidelines : https://www.google.com/design/spec/components/bottom-navigation.html
  */
-public class AHBottomNavigation extends FrameLayout {
+public class AHBottomNavigation extends FrameLayout implements
+		OnYTranslationListener {
 
 	// Constant
 	public static final int CURRENT_ITEM_NONE = -1;
@@ -50,6 +53,7 @@ public class AHBottomNavigation extends FrameLayout {
 
 	// Listener
 	private OnTabSelectedListener tabSelectedListener;
+	private AHBottomNavigationBehavior.OnYTranslationListener yTranslationListener;
 
 	// Variables
 	private Context context;
@@ -455,6 +459,12 @@ public class AHBottomNavigation extends FrameLayout {
 			return;
 		}
 
+		if (tabSelectedListener != null) {
+			boolean selectionAllowed = tabSelectedListener.onTabSelected(itemIndex, false);
+			if (!selectionAllowed) return;
+		}
+
+
 		int activeMarginTop = (int) resources.getDimension(R.dimen.bottom_navigation_margin_top_active);
 		int inactiveMarginTop = (int) resources.getDimension(R.dimen.bottom_navigation_margin_top_inactive);
 		float activeSize = resources.getDimension(R.dimen.bottom_navigation_text_size_active);
@@ -567,6 +577,11 @@ public class AHBottomNavigation extends FrameLayout {
 				tabSelectedListener.onTabSelected(itemIndex, true);
 			}
 			return;
+		}
+
+		if (tabSelectedListener != null) {
+			boolean selectionAllowed = tabSelectedListener.onTabSelected(itemIndex, false);
+			if (!selectionAllowed) return;
 		}
 
 		int activeMarginTop = (int) resources.getDimension(R.dimen.bottom_navigation_small_margin_top_active);
@@ -966,6 +981,8 @@ public class AHBottomNavigation extends FrameLayout {
 			} else {
 				bottomNavigationBehavior.setBehaviorTranslationEnabled(behaviorTranslationEnabled);
 			}
+
+			bottomNavigationBehavior.setYTranslationListener(this);
 			((CoordinatorLayout.LayoutParams) params).setBehavior(bottomNavigationBehavior);
 			if (needHideBottomNavigation) {
 				needHideBottomNavigation = false;
@@ -1079,6 +1096,20 @@ public class AHBottomNavigation extends FrameLayout {
 	 */
 	public void removeOnTabSelectedListener() {
 		this.tabSelectedListener = null;
+	}
+
+	/**
+	 * Set AHOnYTranslationListener
+	 */
+	public void setOnYTranslationListner(OnYTranslationListener yTranslationListener) {
+		this.yTranslationListener = yTranslationListener;
+	}
+
+	/**
+	 * Remove AHOnYTranslationListener()
+	 */
+	public void removeOnYTranslationListener() {
+		this.yTranslationListener = null;
 	}
 
 	/**
@@ -1200,6 +1231,14 @@ public class AHBottomNavigation extends FrameLayout {
 		setClipToPadding(false);
 	}
 
+
+	@Override public void onYTranslation(int y) {
+		if (yTranslationListener != null) {
+			yTranslationListener.onYTranslation(y);
+		}
+	}
+
+
 	////////////////
 	// INTERFACES //
 	////////////////
@@ -1208,7 +1247,6 @@ public class AHBottomNavigation extends FrameLayout {
 	 *
 	 */
 	public interface OnTabSelectedListener {
-		void onTabSelected(int position, boolean wasSelected);
+		boolean onTabSelected(int position, boolean wasSelected);
 	}
-
 }
