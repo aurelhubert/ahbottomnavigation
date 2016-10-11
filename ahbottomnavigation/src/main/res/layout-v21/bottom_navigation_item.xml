@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/bottom_navigation_height"
-    android:background="?selectableItemBackgroundBorderless"
+    android:background="@drawable/item_background"
     android:minWidth="@dimen/bottom_navigation_min_width"
     android:paddingLeft="@dimen/bottom_navigation_padding_left"
     android:paddingRight="@dimen/bottom_navigation_padding_right">
