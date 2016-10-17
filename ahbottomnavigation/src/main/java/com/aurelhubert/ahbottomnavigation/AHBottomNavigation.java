@@ -79,7 +79,8 @@ public class AHBottomNavigation extends FrameLayout {
 	private boolean hideBottomNavigationWithAnimation = false;
 
 	// Variables (Styles)
-	private Typeface titleTypeface;
+	private Typeface activeTitleTypeface;
+	private Typeface inactiveTitleTypeface;
 	private int defaultBackgroundColor = Color.WHITE;
 	private int defaultBackgroundResource = 0;
 	private
@@ -330,8 +331,8 @@ public class AHBottomNavigation extends FrameLayout {
 			icon.setImageDrawable(item.getDrawable(context));
 			title.setText(item.getTitle(context));
 
-			if (titleTypeface != null) {
-				title.setTypeface(titleTypeface);
+			if (activeTitleTypeface != null) {
+				title.setTypeface(activeTitleTypeface);
 			}
 
 			if (forceTitlesDisplay && items.size() > MIN_ITEMS) {
@@ -380,6 +381,11 @@ public class AHBottomNavigation extends FrameLayout {
 					current ? itemActiveColor : itemInactiveColor, forceTint));
 			title.setTextColor(current ? itemActiveColor : itemInactiveColor);
 			title.setTextSize(TypedValue.COMPLEX_UNIT_PX, current ? activeSize : inactiveSize);
+
+			if (activeTitleTypeface != null && inactiveTitleTypeface != null) {
+				title.setTypeface(current ? activeTitleTypeface : inactiveTitleTypeface);
+			}
+
 			view.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -445,8 +451,8 @@ public class AHBottomNavigation extends FrameLayout {
 				title.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleActiveTextSize);
 			}
 
-			if (titleTypeface != null) {
-				title.setTypeface(titleTypeface);
+			if (activeTitleTypeface != null) {
+				title.setTypeface(activeTitleTypeface);
 			}
 
 			if (i == currentItem) {
@@ -561,6 +567,9 @@ public class AHBottomNavigation extends FrameLayout {
 				AHHelper.updateTextSize(title, inactiveSize, activeSize);
 				AHHelper.updateDrawableColor(context, items.get(itemIndex).getDrawable(context), icon,
 						itemInactiveColor, itemActiveColor, forceTint);
+				if (activeTitleTypeface != null && inactiveTitleTypeface != null) {
+					title.setTypeface(activeTitleTypeface);
+				}
 
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && colored) {
 
@@ -622,6 +631,9 @@ public class AHBottomNavigation extends FrameLayout {
 				AHHelper.updateTextSize(title, activeSize, inactiveSize);
 				AHHelper.updateDrawableColor(context, items.get(currentItem).getDrawable(context), icon,
 						itemActiveColor, itemInactiveColor, forceTint);
+				if (activeTitleTypeface != null && inactiveTitleTypeface != null) {
+					title.setTypeface(inactiveTitleTypeface);
+				}
 			}
 		}
 
@@ -1020,12 +1032,22 @@ public class AHBottomNavigation extends FrameLayout {
 	}
 
 	/**
-	 * Set notification typeface
+	 * Set active title typeface
 	 *
 	 * @param typeface Typeface
 	 */
-	public void setTitleTypeface(Typeface typeface) {
-		this.titleTypeface = typeface;
+	public void setActiveTitleTypeface(Typeface typeface) {
+		this.activeTitleTypeface = typeface;
+		createItems();
+	}
+
+	/**
+	 * Set inactive title typeface
+	 *
+	 * @param typeface Typeface
+	 */
+	public void setInactiveTitleTypeface(Typeface typeface) {
+		this.inactiveTitleTypeface = typeface;
 		createItems();
 	}
 
