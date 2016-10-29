@@ -5,12 +5,8 @@ Library to implement the Bottom Navigation component from Material Design guidel
 ## Demo
 <img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo1.gif" width="208" height="368" /> <img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo2.gif" width="208" height="368" /> <img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo3.gif" width="208" height="368" /> <img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo4.gif" width="208" height="368" />
 
-## What's new (1.5.0) - [Changelog](https://github.com/aurelhubert/ahbottomnavigation/blob/master/CHANGELOG.md)
-* Added AHNotification class to manage easily the style of each notification (PR #156) (**old method still works**)
-* Added `setForceTitlesHide(boolean forceTitlesHide)` to force the titles to be hidden (when 3 or less items are displayed)
-* Updated `buildToolsVersion` to version `24.0.2`
-* Updated `'com.android.support:design:24.2.1'`
-
+## What's new (1.5.1) - [Changelog](https://github.com/aurelhubert/ahbottomnavigation/blob/master/CHANGELOG.md)
+* Fixed ripple effect bug (API 21+)
 
 ## Features
 * Follow the bottom navigation guidelines (https://www.google.com/design/spec/components/bottom-navigation.html)
@@ -25,7 +21,7 @@ Library to implement the Bottom Navigation component from Material Design guidel
 ### Gradle
 ```groovy
 dependencies {
-    compile 'com.aurelhubert:ahbottomnavigation:1.5.0'
+    compile 'com.aurelhubert:ahbottomnavigation:1.5.1'
 }
 ```
 ### XML

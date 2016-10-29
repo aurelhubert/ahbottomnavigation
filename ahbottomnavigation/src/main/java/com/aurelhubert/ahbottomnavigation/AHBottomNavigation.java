@@ -384,13 +384,6 @@ public class AHBottomNavigation extends FrameLayout {
 					updateItems(itemIndex, true);
 				}
 			});
-			view.setOnLongClickListener(new OnLongClickListener() {
-				@Override
-				public boolean onLongClick(View view) {
-					updateItems(itemIndex, true);
-					return true;
-				}
-			});
 
 			LayoutParams params = new LayoutParams((int) itemWidth, (int) height);
 			linearLayout.addView(view, params);
@@ -530,7 +523,6 @@ public class AHBottomNavigation extends FrameLayout {
 	 *
 	 * @param itemIndex   int: Selected item position
 	 * @param useCallback boolean: Use or not the callback
-	 * @param singleTap boolean: True to handle single tap, false to handle long tap
 	 */
 	private void updateItems(final int itemIndex, boolean useCallback) {
 
@@ -667,7 +659,6 @@ public class AHBottomNavigation extends FrameLayout {
 	 *
 	 * @param itemIndex   int: Selected item position
 	 * @param useCallback boolean: Use or not the callback
-	 * @param singleTap boolean: True to handle single tap, false to handle long tap
 	 */
 	private void updateSmallItems(final int itemIndex, boolean useCallback) {
 

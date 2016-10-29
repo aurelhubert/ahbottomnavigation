@@ -1,6 +1,10 @@
 ## Changelog
 
-### Newest version: 1.5.0
+### Newest version: 1.5.1
+
+* Fixed ripple effect bug (API 21+)
+
+### 1.5.0
 
 * Added AHNotification class to manage easily the style of each notification (PR #156) (**old method still works**)
 * Added `setForceTitlesHide(boolean forceTitlesHide)` to force the titles to be hidden (when 3 or less items are displayed)
