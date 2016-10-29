@@ -49,6 +49,13 @@ public class AHBottomNavigation extends FrameLayout {
 	public static final int CURRENT_ITEM_NONE = -1;
 	public static final int UPDATE_ALL_NOTIFICATIONS = -1;
 
+	// Title state
+	public enum TitleState {
+		SHOW_WHEN_ACTIVE(),
+		ALWAYS_SHOW(),
+		ALWAYS_HIDE()
+	}
+
 	// Static
 	private static String TAG = "AHBottomNavigation";
     private static final String EXCEPTION_INDEX_OUT_OF_BOUNDS = "The position (%d) is out of bounds of the items (%d elements)";
@@ -104,8 +111,7 @@ public class AHBottomNavigation extends FrameLayout {
 	private int bottomNavigationHeight;
 	private float selectedItemWidth, notSelectedItemWidth;
 	private boolean forceTint = false;
-	private boolean forceTitlesDisplay = false;
-    private boolean forceTitlesHide = false;
+	private TitleState titleState = TitleState.SHOW_WHEN_ACTIVE;
 
 	// Notifications
 	private
@@ -250,7 +256,8 @@ public class AHBottomNavigation extends FrameLayout {
 		LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, layoutHeight);
 		addView(linearLayout, layoutParams);
 
-		if (isClassic()) {
+		if (titleState != TitleState.ALWAYS_HIDE &&
+				(items.size() == MIN_ITEMS || titleState == TitleState.ALWAYS_SHOW)) {
 			createClassicItems(linearLayout);
 		} else {
 			createSmallItems(linearLayout);
@@ -265,15 +272,6 @@ public class AHBottomNavigation extends FrameLayout {
 		});
 	}
 
-    /**
-     * Check if items must be classic
-     *
-     * @return true if classic (icon + title)
-     */
-    private boolean isClassic() {
-        return forceTitlesDisplay || items.size() <= MIN_ITEMS && !forceTitlesHide;
-    }
-
 	/**
 	 * Create classic items (only 3 items in the bottom navigation)
 	 *
@@ -287,7 +285,7 @@ public class AHBottomNavigation extends FrameLayout {
 		float minWidth = resources.getDimension(R.dimen.bottom_navigation_min_width);
 		float maxWidth = resources.getDimension(R.dimen.bottom_navigation_max_width);
 
-		if (forceTitlesDisplay && items.size() > MIN_ITEMS) {
+		if (titleState == TitleState.ALWAYS_SHOW && items.size() > MIN_ITEMS) {
 			minWidth = resources.getDimension(R.dimen.bottom_navigation_small_inactive_min_width);
 			maxWidth = resources.getDimension(R.dimen.bottom_navigation_small_inactive_max_width);
 		}
@@ -311,7 +309,7 @@ public class AHBottomNavigation extends FrameLayout {
 		if (titleActiveTextSize != 0 && titleInactiveTextSize != 0) {
 			activeSize = titleActiveTextSize;
 			inactiveSize = titleInactiveTextSize;
-		} else if (forceTitlesDisplay && items.size() > MIN_ITEMS) {
+		} else if (titleState == TitleState.ALWAYS_SHOW && items.size() > MIN_ITEMS) {
 			activeSize = resources.getDimension(R.dimen.bottom_navigation_text_size_forced_active);
 			inactiveSize = resources.getDimension(R.dimen.bottom_navigation_text_size_forced_inactive);
 		}
@@ -334,7 +332,7 @@ public class AHBottomNavigation extends FrameLayout {
 				title.setTypeface(titleTypeface);
 			}
 
-			if (forceTitlesDisplay && items.size() > MIN_ITEMS) {
+			if (titleState == TitleState.ALWAYS_SHOW && items.size() > MIN_ITEMS) {
 				container.setPadding(0, container.getPaddingTop(), 0, container.getPaddingBottom());
 			}
 
@@ -439,7 +437,10 @@ public class AHBottomNavigation extends FrameLayout {
 			TextView title = (TextView) view.findViewById(R.id.bottom_navigation_small_item_title);
 			TextView notification = (TextView) view.findViewById(R.id.bottom_navigation_notification);
 			icon.setImageDrawable(item.getDrawable(context));
-			title.setText(item.getTitle(context));
+
+			if (titleState != TitleState.ALWAYS_HIDE) {
+				title.setText(item.getTitle(context));
+			}
 
 			if (titleActiveTextSize != 0) {
 				title.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleActiveTextSize);
@@ -455,16 +456,19 @@ public class AHBottomNavigation extends FrameLayout {
 				}
 				icon.setSelected(true);
 				// Update margins (icon & notification)
-				if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
-					ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) icon.getLayoutParams();
-					p.setMargins(p.leftMargin, activeMarginTop, p.rightMargin, p.bottomMargin);
 
-					ViewGroup.MarginLayoutParams paramsNotification = (ViewGroup.MarginLayoutParams)
-							notification.getLayoutParams();
-					paramsNotification.setMargins(notificationActiveMarginLeft, notificationActiveMarginTop,
-							paramsNotification.rightMargin, paramsNotification.bottomMargin);
+				if (titleState != TitleState.ALWAYS_HIDE) {
+					if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+						ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) icon.getLayoutParams();
+						p.setMargins(p.leftMargin, activeMarginTop, p.rightMargin, p.bottomMargin);
 
-					view.requestLayout();
+						ViewGroup.MarginLayoutParams paramsNotification = (ViewGroup.MarginLayoutParams)
+								notification.getLayoutParams();
+						paramsNotification.setMargins(notificationActiveMarginLeft, notificationActiveMarginTop,
+								paramsNotification.rightMargin, paramsNotification.bottomMargin);
+
+						view.requestLayout();
+					}
 				}
 			} else {
 				icon.setSelected(false);
@@ -498,8 +502,14 @@ public class AHBottomNavigation extends FrameLayout {
 				}
 			});
 
-			LayoutParams params = new LayoutParams(i == currentItem ? (int) selectedItemWidth :
-					(int) itemWidth, (int) height);
+			int width = i == currentItem ? (int) selectedItemWidth :
+					(int) itemWidth;
+
+			if (titleState == TitleState.ALWAYS_HIDE) {
+				width = (int) (itemWidth * 1.16);
+			}
+
+			LayoutParams params = new LayoutParams(width, (int) height);
 			linearLayout.addView(view, params);
 			views.add(view);
 		}
@@ -536,7 +546,7 @@ public class AHBottomNavigation extends FrameLayout {
 		if (titleActiveTextSize != 0 && titleInactiveTextSize != 0) {
 			activeSize = titleActiveTextSize;
 			inactiveSize = titleInactiveTextSize;
-		} else if (forceTitlesDisplay && items.size() > MIN_ITEMS) {
+		} else if (titleState == TitleState.ALWAYS_SHOW && items.size() > MIN_ITEMS) {
 			activeSize = resources.getDimension(R.dimen.bottom_navigation_text_size_forced_active);
 			inactiveSize = resources.getDimension(R.dimen.bottom_navigation_text_size_forced_inactive);
 		}
@@ -682,12 +692,20 @@ public class AHBottomNavigation extends FrameLayout {
 				final TextView notification = (TextView) view.findViewById(R.id.bottom_navigation_notification);
 
 				icon.setSelected(true);
-				AHHelper.updateTopMargin(icon, inactiveMargin, activeMarginTop);
-				AHHelper.updateLeftMargin(notification, notificationInactiveMarginLeft, notificationActiveMarginLeft);
-				AHHelper.updateTopMargin(notification, notificationInactiveMarginTop, notificationActiveMarginTop);
+
+				if (titleState != TitleState.ALWAYS_HIDE) {
+					AHHelper.updateTopMargin(icon, inactiveMargin, activeMarginTop);
+					AHHelper.updateLeftMargin(notification, notificationInactiveMarginLeft, notificationActiveMarginLeft);
+					AHHelper.updateTopMargin(notification, notificationInactiveMarginTop, notificationActiveMarginTop);
+				}
+
 				AHHelper.updateTextColor(title, itemInactiveColor, itemActiveColor);
 				AHHelper.updateAlpha(title, 0, 1);
-				AHHelper.updateWidth(container, notSelectedItemWidth, selectedItemWidth);
+
+				if (titleState != TitleState.ALWAYS_HIDE) {
+					AHHelper.updateWidth(container, notSelectedItemWidth, selectedItemWidth);
+				}
+
 				AHHelper.updateDrawableColor(context, items.get(itemIndex).getDrawable(context), icon,
 						itemInactiveColor, itemActiveColor, forceTint);
 
@@ -745,12 +763,20 @@ public class AHBottomNavigation extends FrameLayout {
 				final TextView notification = (TextView) view.findViewById(R.id.bottom_navigation_notification);
 
 				icon.setSelected(false);
-				AHHelper.updateTopMargin(icon, activeMarginTop, inactiveMargin);
-				AHHelper.updateLeftMargin(notification, notificationActiveMarginLeft, notificationInactiveMarginLeft);
-				AHHelper.updateTopMargin(notification, notificationActiveMarginTop, notificationInactiveMarginTop);
+
+				if (titleState != TitleState.ALWAYS_HIDE) {
+					AHHelper.updateTopMargin(icon, activeMarginTop, inactiveMargin);
+					AHHelper.updateLeftMargin(notification, notificationActiveMarginLeft, notificationInactiveMarginLeft);
+					AHHelper.updateTopMargin(notification, notificationActiveMarginTop, notificationInactiveMarginTop);
+				}
+
 				AHHelper.updateTextColor(title, itemActiveColor, itemInactiveColor);
 				AHHelper.updateAlpha(title, 1, 0);
-				AHHelper.updateWidth(container, selectedItemWidth, notSelectedItemWidth);
+
+				if (titleState != TitleState.ALWAYS_HIDE) {
+					AHHelper.updateWidth(container, selectedItemWidth, notSelectedItemWidth);
+				}
+
 				AHHelper.updateDrawableColor(context, items.get(currentItem).getDrawable(context), icon,
 						itemActiveColor, itemInactiveColor, forceTint);
 
@@ -1084,7 +1110,8 @@ public class AHBottomNavigation extends FrameLayout {
 			return;
 		}
 
-		if (isClassic()) {
+		if (titleState != TitleState.ALWAYS_HIDE &&
+				(items.size() == MIN_ITEMS || titleState == TitleState.SHOW_WHEN_ACTIVE)) {
 			updateItems(position, useCallback);
 		} else {
 			updateSmallItems(position, useCallback);
@@ -1202,44 +1229,27 @@ public class AHBottomNavigation extends FrameLayout {
 	}
 
 	/**
-	 * Return if we force the titles to be displayed
+	 * Return the title state for display
 	 *
-	 * @return Boolean
+	 * @return TitleState
 	 */
-	public boolean isForceTitlesDisplay() {
-		return forceTitlesDisplay;
+	public TitleState getTitleState() {
+		return titleState;
 	}
 
 	/**
-	 * Force the titles to be displayed (or used the classic behavior)
-	 * Note: Against Material Design guidelines
+	 * Sets the title state for each tab
+	 * SHOW_WHEN_ACTIVE: when a tab is focused
+	 * ALWAYS_SHOW: show regardless of which tab is in focus
+	 * ALWAYS_HIDE: never show tab titles
+	 * Note: Always showing the title is against Material Design guidelines
 	 *
-	 * @param forceTitlesDisplay Boolean
+	 * @param titleState TitleState
 	 */
-	public void setForceTitlesDisplay(boolean forceTitlesDisplay) {
-		this.forceTitlesDisplay = forceTitlesDisplay;
+	public void setTitleState(TitleState titleState) {
+		this.titleState = titleState;
 		createItems();
 	}
-
-    /**
-     * Return if we force the titles to be hidden
-     *
-     * @return Boolean
-     */
-    public boolean isForceTitlesHide() {
-        return forceTitlesHide;
-    }
-
-    /**
-     * Force the titles to be hidden (don't use the classic behavior)
-     * Note: Against Material Design guidelines
-     *
-     * @param forceTitlesHide Boolean
-     */
-    public void setForceTitlesHide(boolean forceTitlesHide) {
-        this.forceTitlesHide = forceTitlesHide;
-        createItems();
-    }
 
 	/**
 	 * Set AHOnTabSelectedListener
