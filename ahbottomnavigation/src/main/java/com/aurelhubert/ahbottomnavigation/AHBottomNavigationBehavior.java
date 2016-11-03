@@ -35,6 +35,7 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 	private TabLayout mTabLayout;
 	private Snackbar.SnackbarLayout snackbarLayout;
 	private FloatingActionButton floatingActionButton;
+	private boolean floatingActionButtonTranslationEnabled = true;
 	private int mSnackbarHeight = -1;
 	private boolean fabBottomMarginInitialized = false;
 	private float targetOffset = 0, fabTargetOffset = 0, fabDefaultBottomMargin = 0, snackBarY = 0;
@@ -260,7 +261,15 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 		this.behaviorTranslationEnabled = behaviorTranslationEnabled;
 	}
 
-	/**
+    /**
+     * Enable or not Auto handling of floating action button
+     * @param floatingActionButtonTranslationEnabled
+     */
+    public void setFloatingActionButtonTranslationEnabled(boolean floatingActionButtonTranslationEnabled) {
+        this.floatingActionButtonTranslationEnabled = floatingActionButtonTranslationEnabled;
+    }
+
+    /**
 	 * Set OnNavigationPositionListener
 	 */
 	public void setOnNavigationPositionListener(OnNavigationPositionListener navigationHeightListener) {
@@ -347,6 +356,10 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 	 * Update floating action button bottom margin
 	 */
 	public void updateFloatingActionButton(View dependency) {
+		if (!floatingActionButtonTranslationEnabled) {
+			floatingActionButton = null;
+			return;
+		}
 		if (dependency != null && dependency instanceof FloatingActionButton) {
 			floatingActionButton = (FloatingActionButton) dependency;
 			if (!fabBottomMarginInitialized && dependency.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {

@@ -75,6 +75,7 @@ public class AHBottomNavigation extends FrameLayout {
 	private int currentItem = 0;
 	private int currentColor = 0;
 	private boolean behaviorTranslationEnabled = true;
+	private boolean floatingActionButtonTranslationEnabled = true;
 	private boolean needHideBottomNavigation = false;
 	private boolean hideBottomNavigationWithAnimation = false;
 
@@ -1114,6 +1115,7 @@ public class AHBottomNavigation extends FrameLayout {
 			} else {
 				bottomNavigationBehavior.setBehaviorTranslationEnabled(behaviorTranslationEnabled);
 			}
+			bottomNavigationBehavior.setFloatingActionButtonTranslationEnabled(floatingActionButtonTranslationEnabled);
 			if (navigationPositionListener != null) {
 				bottomNavigationBehavior.setOnNavigationPositionListener(navigationPositionListener);
 			}
@@ -1123,6 +1125,17 @@ public class AHBottomNavigation extends FrameLayout {
 				bottomNavigationBehavior.hideView(this, bottomNavigationHeight, hideBottomNavigationWithAnimation);
 				isHidden = true;
 			}
+		}
+	}
+
+	/**
+	 * Enable or not Auto handling of floating action button
+	 * @param floatingActionButtonTranslationEnabled
+     */
+	public void setFloatingActionButtonTranslationEnabled(boolean floatingActionButtonTranslationEnabled) {
+		this.floatingActionButtonTranslationEnabled = floatingActionButtonTranslationEnabled;
+		if (bottomNavigationBehavior != null) {
+			bottomNavigationBehavior.setFloatingActionButtonTranslationEnabled(floatingActionButtonTranslationEnabled);
 		}
 	}
 
