@@ -1090,12 +1090,12 @@ public class AHBottomNavigation extends FrameLayout {
 	/**
 	 * Set title text size
 	 *
-	 * @param activeSize
-	 * @param inactiveSize
+	 * @param activeSize in sp
+	 * @param inactiveSize in sp
 	 */
 	public void setTitleTextSize(float activeSize, float inactiveSize) {
-		this.titleActiveTextSize = activeSize;
-		this.titleInactiveTextSize = inactiveSize;
+		this.titleActiveTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, activeSize, resources.getDisplayMetrics());
+		this.titleInactiveTextSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, inactiveSize, resources.getDisplayMetrics());
 		createItems();
 	}
 
