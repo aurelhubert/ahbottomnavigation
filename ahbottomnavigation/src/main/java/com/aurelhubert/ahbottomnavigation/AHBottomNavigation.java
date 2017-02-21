@@ -617,7 +617,7 @@ public class AHBottomNavigation extends FrameLayout {
 
 			final View view = views.get(i);
 			if (selectedBackgroundVisible) {
-				view.setSelected(i == itemIndex);
+				view.setSelected(i == itemIndex && !colored);
 			}
 
 			if (i == itemIndex) {
@@ -658,6 +658,9 @@ public class AHBottomNavigation extends FrameLayout {
 						public void onAnimationEnd(Animator animation) {
 							setBackgroundColor(items.get(itemIndex).getColor(context));
 							backgroundColorView.setBackgroundColor(Color.TRANSPARENT);
+							if (selectedBackgroundVisible && itemIndex == currentItem) {
+								view.setSelected(true);
+							}
 						}
 
 						@Override
@@ -737,7 +740,7 @@ public class AHBottomNavigation extends FrameLayout {
 
 			final View view = views.get(i);
 			if (selectedBackgroundVisible) {
-				view.setSelected(i == itemIndex);
+				view.setSelected(i == itemIndex &&  !colored);
 			}
 
 			if (i == itemIndex) {
@@ -784,6 +787,9 @@ public class AHBottomNavigation extends FrameLayout {
 						public void onAnimationEnd(Animator animation) {
 							setBackgroundColor(items.get(itemIndex).getColor(context));
 							backgroundColorView.setBackgroundColor(Color.TRANSPARENT);
+							if (selectedBackgroundVisible && itemIndex == currentItem) {
+								view.setSelected(true);
+							}
 						}
 
 						@Override
