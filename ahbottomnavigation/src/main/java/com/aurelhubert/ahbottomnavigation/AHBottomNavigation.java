@@ -71,6 +71,7 @@ public class AHBottomNavigation extends FrameLayout {
 	// Listener
 	private OnTabSelectedListener tabSelectedListener;
 	private OnNavigationPositionListener navigationPositionListener;
+	private OnVisibilityChangeListener visibilityChangeListener;
 
 	// Variables
 	private Context context;
@@ -1245,6 +1246,10 @@ public class AHBottomNavigation extends FrameLayout {
 					.setDuration(withAnimation ? 300 : 0)
 					.start();
 		}
+		// notify the visibility of the view changed
+		if(visibilityChangeListener != null) {
+			visibilityChangeListener.onVisibilityChange(true);
+		}
 	}
 
 	/**
@@ -1270,6 +1275,10 @@ public class AHBottomNavigation extends FrameLayout {
 					.setInterpolator(new LinearOutSlowInInterpolator())
 					.setDuration(withAnimation ? 300 : 0)
 					.start();
+		}
+		// notify the visibility of the view changed
+		if (visibilityChangeListener != null) {
+			visibilityChangeListener.onVisibilityChange(false);
 		}
 	}
 
@@ -1362,6 +1371,20 @@ public class AHBottomNavigation extends FrameLayout {
 		if (bottomNavigationBehavior != null) {
 			bottomNavigationBehavior.removeOnNavigationPositionListener();
 		}
+	}
+
+	/**
+	 * Set OnVisibilityChangeListener
+	 */
+	public void setOnVisibilityChangeListener(OnVisibilityChangeListener visibilityChangeListener) {
+		this.visibilityChangeListener = visibilityChangeListener;
+	}
+
+	/**
+	 * Remove OnVisibilityChangeListener
+	 */
+	public void removeOnVisibilityChangeListener() {
+		this.visibilityChangeListener = null;
 	}
 
 	/**
@@ -1550,6 +1573,15 @@ public class AHBottomNavigation extends FrameLayout {
 		 * @param y int: y translation of bottom navigation
 		 */
 		void onPositionChange(int y);
+	}
+
+	public interface OnVisibilityChangeListener {
+		/**
+		 * Called when the bottom navigation is hidden
+		 *
+		 * @param isHidden boolean: true if it is now hidden
+		 */
+		void onVisibilityChange(boolean ishHidden);
 	}
 
 }
