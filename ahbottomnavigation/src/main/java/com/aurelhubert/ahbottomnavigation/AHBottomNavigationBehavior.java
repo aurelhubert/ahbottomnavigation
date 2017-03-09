@@ -14,6 +14,7 @@ import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v4.view.ViewPropertyAnimatorUpdateListener;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Interpolator;
@@ -40,6 +41,7 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 	private float targetOffset = 0, fabTargetOffset = 0, fabDefaultBottomMargin = 0, snackBarY = 0;
 	private boolean behaviorTranslationEnabled = true;
 	private OnNavigationPositionListener navigationPositionListener;
+    private OnVisibilityChangedListener visibilityChangedListener;
 
 	/**
 	 * Constructor
@@ -134,9 +136,17 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 		if (scrollDirection == ScrollDirection.SCROLL_DIRECTION_DOWN && hidden) {
 			hidden = false;
 			animateOffset(child, 0, false, true);
+            Log.d("Behavior", "handleDirection: scrolled down");
+            if (visibilityChangedListener != null) {
+                visibilityChangedListener.onVisibilityChanged(true);
+            }
 		} else if (scrollDirection == ScrollDirection.SCROLL_DIRECTION_UP && !hidden) {
 			hidden = true;
 			animateOffset(child, child.getHeight(), false, true);
+            Log.d("Behavior", "handleDirection: scrolled up");
+            if (visibilityChangedListener != null) {
+                visibilityChangedListener.onVisibilityChanged(false);
+            }
 		}
 	}
 
@@ -256,6 +266,13 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 		this.navigationPositionListener = null;
 	}
 
+    /**
+     * Set OnVisibilityChangedListener
+     */
+    public void setOnVisibilityChangedListener(OnVisibilityChangedListener visibilityChangedListener) {
+        this.visibilityChangedListener = visibilityChangedListener;
+    }
+
 	/**
 	 * Hide AHBottomNavigation with animation
 	 * @param view
@@ -304,5 +321,14 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 			}
 		}
 	}
+
+	public interface OnVisibilityChangedListener {
+        /**
+         * Listener for hide/restore of the bottom navigation bar
+         *
+         * @param isHidden is true when the bottom nav becomes hidden
+         */
+        void onVisibilityChanged(boolean isHidden);
+    }
 
 }

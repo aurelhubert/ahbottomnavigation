@@ -71,7 +71,6 @@ public class AHBottomNavigation extends FrameLayout {
 	// Listener
 	private OnTabSelectedListener tabSelectedListener;
 	private OnNavigationPositionListener navigationPositionListener;
-	private OnVisibilityChangeListener visibilityChangeListener;
 
 	// Variables
 	private Context context;
@@ -1212,10 +1211,32 @@ public class AHBottomNavigation extends FrameLayout {
 	 * @param fab Floating Action Button
 	 */
 	public void manageFloatingActionButtonBehavior(FloatingActionButton fab) {
-		if (fab.getParent() instanceof CoordinatorLayout) {
+		manageFloatingActionButtonBehavior(fab, false);
+	}
+
+	/**
+	 * Manage the floating action button behavior with AHBottomNavigation
+	 * @param fab Floating Action Button
+	 * @param hideOnScroll Boolean to hide on scroll
+	 */
+	public void manageFloatingActionButtonBehavior(final FloatingActionButton fab, boolean hideOnScroll) {
+		if (fab.getParent() instanceof CoordinatorLayout && !hideOnScroll) {
 			AHBottomNavigationFABBehavior fabBehavior = new AHBottomNavigationFABBehavior(navigationBarHeight);
-			((CoordinatorLayout.LayoutParams) fab.getLayoutParams())
-					.setBehavior(fabBehavior);
+			((CoordinatorLayout.LayoutParams) fab.getLayoutParams()).setBehavior(fabBehavior);
+		}
+
+		if (hideOnScroll) {
+			if (bottomNavigationBehavior == null) setBehaviorTranslationEnabled(true);
+			bottomNavigationBehavior.setOnVisibilityChangedListener(new AHBottomNavigationBehavior.OnVisibilityChangedListener() {
+				@Override
+				public void onVisibilityChanged(boolean isHidden) {
+					if (isHidden) {
+						fab.show();
+					} else {
+						fab.hide();
+					}
+				}
+			});
 		}
 	}
 
@@ -1246,10 +1267,6 @@ public class AHBottomNavigation extends FrameLayout {
 					.setDuration(withAnimation ? 300 : 0)
 					.start();
 		}
-		// notify the visibility of the view changed
-		if(visibilityChangeListener != null) {
-			visibilityChangeListener.onVisibilityChange(true);
-		}
 	}
 
 	/**
@@ -1275,10 +1292,6 @@ public class AHBottomNavigation extends FrameLayout {
 					.setInterpolator(new LinearOutSlowInInterpolator())
 					.setDuration(withAnimation ? 300 : 0)
 					.start();
-		}
-		// notify the visibility of the view changed
-		if (visibilityChangeListener != null) {
-			visibilityChangeListener.onVisibilityChange(false);
 		}
 	}
 
@@ -1371,20 +1384,6 @@ public class AHBottomNavigation extends FrameLayout {
 		if (bottomNavigationBehavior != null) {
 			bottomNavigationBehavior.removeOnNavigationPositionListener();
 		}
-	}
-
-	/**
-	 * Set OnVisibilityChangeListener
-	 */
-	public void setOnVisibilityChangeListener(OnVisibilityChangeListener visibilityChangeListener) {
-		this.visibilityChangeListener = visibilityChangeListener;
-	}
-
-	/**
-	 * Remove OnVisibilityChangeListener
-	 */
-	public void removeOnVisibilityChangeListener() {
-		this.visibilityChangeListener = null;
 	}
 
 	/**
@@ -1573,15 +1572,6 @@ public class AHBottomNavigation extends FrameLayout {
 		 * @param y int: y translation of bottom navigation
 		 */
 		void onPositionChange(int y);
-	}
-
-	public interface OnVisibilityChangeListener {
-		/**
-		 * Called when the bottom navigation is hidden
-		 *
-		 * @param isHidden boolean: true if it is now hidden
-		 */
-		void onVisibilityChange(boolean ishHidden);
 	}
 
 }
