@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:design:25.2.0'
+    compile 'com.android.support:design:25.3.1'
 }
 
 // Place it at the end of the file
