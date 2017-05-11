@@ -24,4 +24,5 @@
         <item name="tab_5">#F63D2B</item>
     </array>
 
+    <color name="colorBottomNavigationShapLine">#a1a1a1</color>
 </resources>

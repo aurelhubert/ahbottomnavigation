@@ -1,6 +1,7 @@
 package com.aurelhubert.ahbottomnavigation.demo;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -64,6 +65,7 @@ public class DemoFragment extends Fragment {
 		final SwitchCompat showSelectedBackground = (SwitchCompat) view.findViewById(R.id.fragment_demo_selected_background);
 		final SwitchCompat switchForceTitleHide = (SwitchCompat) view.findViewById(R.id.fragment_demo_force_title_hide);
 		final SwitchCompat switchTranslucentNavigation = (SwitchCompat) view.findViewById(R.id.fragment_demo_translucent_navigation);
+		final SwitchCompat showNavigationBottomLine = (SwitchCompat) view.findViewById(R.id.fragment_demo_navigation_bottom_line);
 
 		switchColored.setChecked(demoActivity.isBottomNavigationColored());
 		switchFiveItems.setChecked(demoActivity.getBottomNavigationNbItems() == 5);
@@ -108,13 +110,15 @@ public class DemoFragment extends Fragment {
 				demoActivity.updateSelectedBackgroundVisibility(isChecked);
 			}
 		});
-		switchForceTitleHide.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+		showNavigationBottomLine.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				demoActivity.setForceTitleHide(isChecked);
+				bShowHideBorderLine =! bShowHideBorderLine;
+				demoActivity.setNavigationBorderLine(getResources().getColor(R.color.color_tab_5),bShowHideBorderLine?5:0,new Rect(0,bShowHideBorderLine?2:0,0,0));
 			}
 		});
 	}
+	private boolean bShowHideBorderLine=false;
 
 	/**
 	 * Init the fragment

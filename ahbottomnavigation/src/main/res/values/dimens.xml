@@ -43,5 +43,4 @@
     <dimen name="bottom_navigation_notification_margin_top">14dp</dimen>
     <dimen name="bottom_navigation_notification_margin_top_active">3dp</dimen>
     <dimen name="bottom_navigation_notification_text_size">9sp</dimen>
-
 </resources>

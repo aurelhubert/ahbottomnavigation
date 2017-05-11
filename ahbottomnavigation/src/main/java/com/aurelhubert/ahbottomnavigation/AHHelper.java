@@ -24,6 +24,12 @@ import android.widget.TextView;
  */
 public class AHHelper {
 
+
+	public interface AHBgAnimation{
+		public void backGroundColorAnimation(@ColorInt int color);
+	}
+
+
 	/**
 	 * Return a tint drawable
 	 *
@@ -163,6 +169,21 @@ public class AHHelper {
 			@Override
 			public void onAnimationUpdate(ValueAnimator animator) {
 				view.setBackgroundColor((Integer) animator.getAnimatedValue());
+			}
+		});
+		colorAnimation.start();
+	}
+
+	public static void updateViewBackgroundColor(final View view, @ColorInt int fromColor,
+												 @ColorInt int toColor ,final AHBgAnimation ahBganimal) {
+		ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), fromColor, toColor);
+		colorAnimation.setDuration(150);
+		colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+			@Override
+			public void onAnimationUpdate(ValueAnimator animator) {
+				if(ahBganimal != null){
+					ahBganimal.backGroundColorAnimation((Integer) animator.getAnimatedValue());
+				} 
 			}
 		});
 		colorAnimation.start();
