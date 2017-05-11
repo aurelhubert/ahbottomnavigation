@@ -8,4 +8,5 @@
     <color name="colorBottomNavigationInactiveColored">#50FFFFFF</color>
     <color name="colorBottomNavigationSelectedBackground">#17000000</color>
     <color name="colorBottomNavigationNotification">#F63D2B</color>
+    <color name="colorBottomNavigationShapLine">#d8d8d8</color>
 </resources>

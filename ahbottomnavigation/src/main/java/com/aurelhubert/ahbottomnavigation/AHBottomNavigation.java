@@ -7,8 +7,11 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -117,6 +120,10 @@ public class AHBottomNavigation extends FrameLayout {
 	private int notificationActiveMarginLeft, notificationInactiveMarginLeft;
 	private int notificationActiveMarginTop, notificationInactiveMarginTop;
 
+	// bottom line 
+	private @ColorInt int bottomNavigationBorderLineColor;
+	private @ColorInt int bottomNavigationBorderLineRadius=0;
+	private Rect bottomNavigationShapePading = new Rect(0,0,0,0);
 	/**
 	 * Constructors
 	 */
@@ -219,6 +226,10 @@ public class AHBottomNavigation extends FrameLayout {
 		notificationActiveMarginTop = (int) resources.getDimension(R.dimen.bottom_navigation_notification_margin_top_active);
 		notificationInactiveMarginTop = (int) resources.getDimension(R.dimen.bottom_navigation_notification_margin_top);
 
+		// bottom line
+		bottomNavigationBorderLineColor = ContextCompat.getColor(context, R.color.colorBottomNavigationShapLine);
+		bottomNavigationBorderLineRadius = 0;
+
 		ViewCompat.setElevation(this, resources.getDimension(R.dimen.bottom_navigation_elevation));
 		setClipToPadding(false);
 
@@ -271,6 +282,35 @@ public class AHBottomNavigation extends FrameLayout {
 			}
 		});
 	}
+
+	public void setNavigationBorderLine(){
+//		bottomNavigationLineColor = R.color.colorBottomNavigationNotification;
+		setNavigationBorderLine(getResources().getColor(R.color.colorBottomNavigationShapLine),0,new Rect(0,2,0,0));
+	}
+	public void setNavigationBorderLine(@ColorInt int iColor,int iRadius,Rect rShapePading){
+		bottomNavigationBorderLineColor = iColor;
+		bottomNavigationBorderLineRadius = iRadius;
+		bottomNavigationShapePading.set(rShapePading);
+//		createItems();
+		setLayerDrawable(defaultBackgroundColor);
+	}
+
+	private void setLayerDrawable(@ColorInt int bgcolor){
+			GradientDrawable whiteDrawable = getGradientDrawable(getContext(), bgcolor, bottomNavigationBorderLineRadius);//getResources().getColor(android.R.color.transparent)
+			GradientDrawable grayDrawable = getGradientDrawable(getContext(), bottomNavigationBorderLineColor, bottomNavigationBorderLineRadius);
+			LayerDrawable layerDrawable = new LayerDrawable(new Drawable[]{grayDrawable, whiteDrawable});
+			//设置padding
+			layerDrawable.setLayerInset(0, 0, 0, 0, 0);
+			layerDrawable.setLayerInset(1, bottomNavigationShapePading.left, bottomNavigationShapePading.top, bottomNavigationShapePading.right, bottomNavigationShapePading.bottom);
+
+			ViewCompat.setBackground(this,layerDrawable);
+	}
+	public static GradientDrawable getGradientDrawable(Context context,@ColorInt int colID, int dp) {
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setColor(colID);
+        drawable.setCornerRadius(dp);
+        return drawable;
+    }
 
 	@SuppressLint("NewApi")
 	@TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -423,13 +463,15 @@ public class AHBottomNavigation extends FrameLayout {
 			if (colored) {
 				if (current) {
 					setBackgroundColor(item.getColor(context));
+					setLayerDrawable(item.getColor(context));
 					currentColor = item.getColor(context);
 				}
 			} else {
 				if (defaultBackgroundResource != 0) {
 					setBackgroundResource(defaultBackgroundResource);
 				} else {
-					setBackgroundColor(defaultBackgroundColor);
+//					setBackgroundColor(defaultBackgroundColor);
+					setLayerDrawable(defaultBackgroundColor);
 				}
 			}
 
@@ -540,14 +582,16 @@ public class AHBottomNavigation extends FrameLayout {
 
 			if (colored) {
 				if (i == currentItem) {
-					setBackgroundColor(item.getColor(context));
+//					setBackgroundColor(item.getColor(context));
+					setLayerDrawable(item.getColor(context));
 					currentColor = item.getColor(context);
 				}
 			} else {
 				if (defaultBackgroundResource != 0) {
 					setBackgroundResource(defaultBackgroundResource);
 				} else {
-					setBackgroundColor(defaultBackgroundColor);
+//					setBackgroundColor(defaultBackgroundColor);
+					setLayerDrawable(defaultBackgroundColor);
 				}
 			}
 
@@ -640,9 +684,9 @@ public class AHBottomNavigation extends FrameLayout {
 					int cy = view.getHeight() / 2;
 
 					if (circleRevealAnim != null && circleRevealAnim.isRunning()) {
-						circleRevealAnim.cancel();
-						setBackgroundColor(items.get(itemIndex).getColor(context));
+						circleRevealAnim.cancel(); 
 						backgroundColorView.setBackgroundColor(Color.TRANSPARENT);
+						setLayerDrawable(items.get(itemIndex).getColor(context));
 					}
 
 					circleRevealAnim = ViewAnimationUtils.createCircularReveal(backgroundColorView, cx, cy, 0, finalRadius);
@@ -654,9 +698,9 @@ public class AHBottomNavigation extends FrameLayout {
 						}
 
 						@Override
-						public void onAnimationEnd(Animator animation) {
-							setBackgroundColor(items.get(itemIndex).getColor(context));
+						public void onAnimationEnd(Animator animation) { 
 							backgroundColorView.setBackgroundColor(Color.TRANSPARENT);
+							setLayerDrawable(items.get(itemIndex).getColor(context));
 						}
 
 						@Override
@@ -670,12 +714,17 @@ public class AHBottomNavigation extends FrameLayout {
 					circleRevealAnim.start();
 				} else if (colored) {
 					AHHelper.updateViewBackgroundColor(this, currentColor,
-							items.get(itemIndex).getColor(context));
+							items.get(itemIndex).getColor(context), new AHHelper.AHBgAnimation() {
+								@Override
+								public void backGroundColorAnimation(int color) {
+									setLayerDrawable(color);
+								}
+							});
 				} else {
 					if (defaultBackgroundResource != 0) {
 						setBackgroundResource(defaultBackgroundResource);
-					} else {
-						setBackgroundColor(defaultBackgroundColor);
+					} else { 
+						setLayerDrawable(defaultBackgroundColor);
 					}
 					backgroundColorView.setBackgroundColor(Color.TRANSPARENT);
 				}
@@ -702,8 +751,8 @@ public class AHBottomNavigation extends FrameLayout {
 		} else if (currentItem == CURRENT_ITEM_NONE) {
 			if (defaultBackgroundResource != 0) {
 				setBackgroundResource(defaultBackgroundResource);
-			} else {
-				setBackgroundColor(defaultBackgroundColor);
+			} else { 
+				setLayerDrawable(defaultBackgroundColor);
 			}
 			backgroundColorView.setBackgroundColor(Color.TRANSPARENT);
 		}
@@ -766,8 +815,8 @@ public class AHBottomNavigation extends FrameLayout {
 					int cy = views.get(itemIndex).getHeight() / 2;
 
 					if (circleRevealAnim != null && circleRevealAnim.isRunning()) {
-						circleRevealAnim.cancel();
-						setBackgroundColor(items.get(itemIndex).getColor(context));
+						circleRevealAnim.cancel(); 
+						setLayerDrawable(items.get(itemIndex).getColor(context)); 
 						backgroundColorView.setBackgroundColor(Color.TRANSPARENT);
 					}
 
@@ -780,8 +829,8 @@ public class AHBottomNavigation extends FrameLayout {
 						}
 
 						@Override
-						public void onAnimationEnd(Animator animation) {
-							setBackgroundColor(items.get(itemIndex).getColor(context));
+						public void onAnimationEnd(Animator animation) { 
+							setLayerDrawable(items.get(itemIndex).getColor(context)); 
 							backgroundColorView.setBackgroundColor(Color.TRANSPARENT);
 						}
 
@@ -796,12 +845,17 @@ public class AHBottomNavigation extends FrameLayout {
 					circleRevealAnim.start();
 				} else if (colored) {
 					AHHelper.updateViewBackgroundColor(this, currentColor,
-							items.get(itemIndex).getColor(context));
+							items.get(itemIndex).getColor(context), new AHHelper.AHBgAnimation() {
+								@Override
+								public void backGroundColorAnimation(int color) {
+									setLayerDrawable(color);
+								}
+							});
 				} else {
 					if (defaultBackgroundResource != 0) {
 						setBackgroundResource(defaultBackgroundResource);
-					} else {
-						setBackgroundColor(defaultBackgroundColor);
+					} else { 
+						setLayerDrawable(defaultBackgroundColor);
 					}
 					backgroundColorView.setBackgroundColor(Color.TRANSPARENT);
 				}
@@ -835,8 +889,8 @@ public class AHBottomNavigation extends FrameLayout {
 		} else if (currentItem == CURRENT_ITEM_NONE) {
 			if (defaultBackgroundResource != 0) {
 				setBackgroundResource(defaultBackgroundResource);
-			} else {
-				setBackgroundColor(defaultBackgroundColor);
+			} else { 
+				setLayerDrawable(defaultBackgroundColor);
 			}
 			backgroundColorView.setBackgroundColor(Color.TRANSPARENT);
 		}

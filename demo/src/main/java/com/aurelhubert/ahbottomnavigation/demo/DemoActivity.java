@@ -3,8 +3,10 @@ package com.aurelhubert.ahbottomnavigation.demo;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.ColorInt;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
@@ -281,6 +283,14 @@ public class DemoActivity extends AppCompatActivity {
 	public void setForceTitleHide(boolean forceTitleHide) {
 		AHBottomNavigation.TitleState state = forceTitleHide ? AHBottomNavigation.TitleState.ALWAYS_HIDE : AHBottomNavigation.TitleState.ALWAYS_SHOW;
 		bottomNavigation.setTitleState(state);
+	}
+
+	/**
+	 * Show BorderLine
+	 * default setBottomLine()
+	 */
+	public void setNavigationBorderLine(@ColorInt int iColor, int iRadius, Rect rShapePading) {
+		bottomNavigation.setNavigationBorderLine(iColor,iRadius,rShapePading);
 	}
 
 	/**

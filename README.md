@@ -4,7 +4,7 @@ Library to implement the Bottom Navigation component from Material Design guidel
 
 ## Demo
 <img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo1.gif" width="208" height="368" /> <img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo2.gif" width="208" height="368" /> <img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo3.gif" width="208" height="368" /> <img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo4.gif" width="208" height="368" />
-
+<img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo5.gif" width="208" height="368" />
 ## What's new (2.0.6) - [Changelog](https://github.com/aurelhubert/ahbottomnavigation/blob/master/CHANGELOG.md)
 * Fix selected item background for API >= 21
 * Fix `isHidden()` method
@@ -124,6 +124,12 @@ bottomNavigation.setOnNavigationPositionListener(new AHBottomNavigation.OnNaviga
 		// Manage the new y position
 	}
 });
+
+// Set BottomBorder Line Or Radius
+bottomNavigation.setNavigationBorderLine(iColor,iRadius,rShapePading);
+// OR use default border line style: #a1a1a1   iRadius=0  new Rect(0,2,0,0)
+bottomNavigation.setNavigationBorderLine();
+
 ```
 
 ### With XML menu
