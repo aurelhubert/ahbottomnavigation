@@ -44,6 +44,11 @@ public class AHHelper {
 		return wrapDrawable;
 	}
 
+	public static Drawable getTintDrawable(Drawable drawable) {
+		Drawable wrapDrawable = DrawableCompat.wrap(drawable).mutate();
+		return wrapDrawable;
+	}
+
 	/**
 	 * Update top margin with animation
 	 */
@@ -185,6 +190,11 @@ public class AHHelper {
 			}
 		});
 		colorAnimation.start();
+	}
+
+	public static void updateDrawable(final Context context, final Drawable drawable, final ImageView imageView) {
+		imageView.setImageDrawable(AHHelper.getTintDrawable(drawable));
+		imageView.requestLayout();
 	}
 
 	/**

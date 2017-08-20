@@ -27,7 +27,7 @@ public class DemoActivity extends AppCompatActivity {
 	private DemoViewPagerAdapter adapter;
 	private AHBottomNavigationAdapter navigationAdapter;
 	private ArrayList<AHBottomNavigationItem> bottomNavigationItems = new ArrayList<>();
-	private boolean useMenuResource = true;
+	private boolean useMenuResource = false;
 	private int[] tabColors;
 	private Handler handler = new Handler();
 
@@ -58,6 +58,8 @@ public class DemoActivity extends AppCompatActivity {
 	private void initUI() {
 
 		bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
+		bottomNavigation.setForceTint(false); 	// false : ignore tint color, apply selected icon
+												// true : apply tint color, ignore selected icon
 		viewPager = (AHBottomNavigationViewPager) findViewById(R.id.view_pager);
 		floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_action_button);
 
@@ -66,9 +68,9 @@ public class DemoActivity extends AppCompatActivity {
 			navigationAdapter = new AHBottomNavigationAdapter(this, R.menu.bottom_navigation_menu_3);
 			navigationAdapter.setupWithBottomNavigation(bottomNavigation, tabColors);
 		} else {
-			AHBottomNavigationItem item1 = new AHBottomNavigationItem(R.string.tab_1, R.drawable.ic_apps_black_24dp, R.color.color_tab_1);
-			AHBottomNavigationItem item2 = new AHBottomNavigationItem(R.string.tab_2, R.drawable.ic_maps_local_bar, R.color.color_tab_2);
-			AHBottomNavigationItem item3 = new AHBottomNavigationItem(R.string.tab_3, R.drawable.ic_maps_local_restaurant, R.color.color_tab_3);
+			AHBottomNavigationItem item1 = new AHBottomNavigationItem(R.string.tab_1, R.drawable.map, R.drawable.map_active, R.color.color_tab_1);
+			AHBottomNavigationItem item2 = new AHBottomNavigationItem(R.string.tab_2, R.drawable.calc, R.drawable.calc_active, R.color.color_tab_2);
+			AHBottomNavigationItem item3 = new AHBottomNavigationItem(R.string.tab_3, R.drawable.settings, R.drawable.settings_active, R.color.color_tab_3);
 
 			bottomNavigationItems.add(item1);
 			bottomNavigationItems.add(item2);

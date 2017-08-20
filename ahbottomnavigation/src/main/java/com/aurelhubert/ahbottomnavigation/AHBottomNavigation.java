@@ -433,8 +433,15 @@ public class AHBottomNavigation extends FrameLayout {
 				}
 			}
 
-			icon.setImageDrawable(AHHelper.getTintDrawable(items.get(i).getDrawable(context),
-					current ? itemActiveColor : itemInactiveColor, forceTint));
+			if (forceTint) {
+				icon.setImageDrawable(AHHelper.getTintDrawable(items.get(i).getDrawable(context),
+						current ? itemActiveColor : itemInactiveColor, forceTint));
+			} else {
+				if (current) {
+					icon.setImageDrawable(AHHelper.getTintDrawable(items.get(i).getSelectedDrawable(context)));
+				}
+			}
+
 			title.setTextColor(current ? itemActiveColor : itemInactiveColor);
 			title.setTextSize(TypedValue.COMPLEX_UNIT_PX, current ? activeSize : inactiveSize);
 			view.setOnClickListener(new OnClickListener() {
@@ -488,7 +495,7 @@ public class AHBottomNavigation extends FrameLayout {
 
 
 		for (int i = 0; i < items.size(); i++) {
-
+			final boolean current = currentItem == i;
 			final int itemIndex = i;
 			AHBottomNavigationItem item = items.get(itemIndex);
 
@@ -510,7 +517,7 @@ public class AHBottomNavigation extends FrameLayout {
 				title.setTypeface(titleTypeface);
 			}
 
-			if (i == currentItem) {
+			if (current) {
 				if (selectedBackgroundVisible) {
 					view.setSelected(true);
 				}
@@ -539,7 +546,7 @@ public class AHBottomNavigation extends FrameLayout {
 			}
 
 			if (colored) {
-				if (i == currentItem) {
+				if (current) {
 					setBackgroundColor(item.getColor(context));
 					currentColor = item.getColor(context);
 				}
@@ -551,10 +558,17 @@ public class AHBottomNavigation extends FrameLayout {
 				}
 			}
 
-			icon.setImageDrawable(AHHelper.getTintDrawable(items.get(i).getDrawable(context),
-					currentItem == i ? itemActiveColor : itemInactiveColor, forceTint));
-			title.setTextColor(currentItem == i ? itemActiveColor : itemInactiveColor);
-			title.setAlpha(currentItem == i ? 1 : 0);
+			if (forceTint) {
+				icon.setImageDrawable(AHHelper.getTintDrawable(items.get(i).getDrawable(context),
+						current ? itemActiveColor : itemInactiveColor, forceTint));
+			} else {
+				if (current) {
+					icon.setImageDrawable(AHHelper.getTintDrawable(items.get(i).getSelectedDrawable(context)));
+				}
+			}
+
+			title.setTextColor(current ? itemActiveColor : itemInactiveColor);
+			title.setAlpha(current ? 1 : 0);
 			view.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -563,7 +577,7 @@ public class AHBottomNavigation extends FrameLayout {
 			});
 			view.setSoundEffectsEnabled(soundEffectsEnabled);
 
-			int width = i == currentItem ? (int) selectedItemWidth :
+			int width = current ? (int) selectedItemWidth :
 					(int) itemWidth;
 
 			if (titleState == TitleState.ALWAYS_HIDE) {
@@ -630,8 +644,12 @@ public class AHBottomNavigation extends FrameLayout {
 				AHHelper.updateLeftMargin(notification, notificationInactiveMarginLeft, notificationActiveMarginLeft);
 				AHHelper.updateTextColor(title, itemInactiveColor, itemActiveColor);
 				AHHelper.updateTextSize(title, inactiveSize, activeSize);
-				AHHelper.updateDrawableColor(context, items.get(itemIndex).getDrawable(context), icon,
-						itemInactiveColor, itemActiveColor, forceTint);
+				if (forceTint) {
+					AHHelper.updateDrawableColor(context, items.get(itemIndex).getDrawable(context), icon,
+							itemInactiveColor, itemActiveColor, forceTint);
+				} else {
+					AHHelper.updateDrawable(context, items.get(itemIndex).getSelectedDrawable(context), icon);
+				}
 
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && colored) {
 
@@ -691,8 +709,12 @@ public class AHBottomNavigation extends FrameLayout {
 				AHHelper.updateLeftMargin(notification, notificationActiveMarginLeft, notificationInactiveMarginLeft);
 				AHHelper.updateTextColor(title, itemActiveColor, itemInactiveColor);
 				AHHelper.updateTextSize(title, activeSize, inactiveSize);
-				AHHelper.updateDrawableColor(context, items.get(currentItem).getDrawable(context), icon,
-						itemActiveColor, itemInactiveColor, forceTint);
+				if (forceTint) {
+					AHHelper.updateDrawableColor(context, items.get(currentItem).getDrawable(context), icon,
+							itemActiveColor, itemInactiveColor, forceTint);
+				} else {
+					AHHelper.updateDrawable(context, items.get(currentItem).getDrawable(context), icon);
+				}
 			}
 		}
 
@@ -757,8 +779,12 @@ public class AHBottomNavigation extends FrameLayout {
 				}
 
 				AHHelper.updateAlpha(title, 0, 1);
-				AHHelper.updateDrawableColor(context, items.get(itemIndex).getDrawable(context), icon,
-						itemInactiveColor, itemActiveColor, forceTint);
+				if (forceTint) {
+					AHHelper.updateDrawableColor(context, items.get(itemIndex).getDrawable(context), icon,
+							itemInactiveColor, itemActiveColor, forceTint);
+				} else {
+					AHHelper.updateDrawable(context, items.get(itemIndex).getSelectedDrawable(context), icon);
+				}
 
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && colored) {
 					int finalRadius = Math.max(getWidth(), getHeight());
@@ -824,8 +850,12 @@ public class AHBottomNavigation extends FrameLayout {
 				}
 
 				AHHelper.updateAlpha(title, 1, 0);
-				AHHelper.updateDrawableColor(context, items.get(currentItem).getDrawable(context), icon,
-						itemActiveColor, itemInactiveColor, forceTint);
+				if (forceTint) {
+					AHHelper.updateDrawableColor(context, items.get(currentItem).getDrawable(context), icon,
+							itemActiveColor, itemInactiveColor, forceTint);
+				} else {
+					AHHelper.updateDrawable(context, items.get(currentItem).getDrawable(context), icon);
+				}
 			}
 		}
 
