@@ -79,6 +79,8 @@ bottomNavigation.setAccentColor(Color.parseColor("#F63D2B"));
 bottomNavigation.setInactiveColor(Color.parseColor("#747474"));
 
 // Force to tint the drawable (useful for font with icon for example)
+// false : ignore tint color, apply selected icon
+// true : apply tint color, ignore selected icon
 bottomNavigation.setForceTint(true);
 
 // Display color under navigation bar (API 21+)
