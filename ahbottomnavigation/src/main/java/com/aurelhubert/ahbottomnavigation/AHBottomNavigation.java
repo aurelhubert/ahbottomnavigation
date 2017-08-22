@@ -437,7 +437,7 @@ public class AHBottomNavigation extends FrameLayout {
 
 			icon.setImageDrawable(AHHelper.getTintDrawable(items.get(i).getDrawable(context),
 					current ? itemActiveColor : itemInactiveColor, forceTint));
-			title.setTextColor(current ? itemActiveColor : itemInactiveColor);
+			title.setTextColor(current ? titleColorActive : titleColorInactive);
 			title.setTextSize(TypedValue.COMPLEX_UNIT_PX, current ? activeSize : inactiveSize);
 			view.setOnClickListener(new OnClickListener() {
 				@Override
@@ -555,7 +555,7 @@ public class AHBottomNavigation extends FrameLayout {
 
 			icon.setImageDrawable(AHHelper.getTintDrawable(items.get(i).getDrawable(context),
 					currentItem == i ? itemActiveColor : itemInactiveColor, forceTint));
-			title.setTextColor(currentItem == i ? itemActiveColor : itemInactiveColor);
+			title.setTextColor(currentItem == 1 ? titleColorActive : titleColorInactive);
 			title.setAlpha(currentItem == i ? 1 : 0);
 			view.setOnClickListener(new OnClickListener() {
 				@Override
@@ -630,7 +630,7 @@ public class AHBottomNavigation extends FrameLayout {
 				icon.setSelected(true);
 				AHHelper.updateTopMargin(icon, inactiveMarginTop, activeMarginTop);
 				AHHelper.updateLeftMargin(notification, notificationInactiveMarginLeft, notificationActiveMarginLeft);
-				AHHelper.updateTextColor(title, itemInactiveColor, itemActiveColor);
+				AHHelper.updateTextColor(title, titleColorInactive, titleColorActive);
 				AHHelper.updateTextSize(title, inactiveSize, activeSize);
 				AHHelper.updateDrawableColor(context, items.get(itemIndex).getDrawable(context), icon,
 						itemInactiveColor, itemActiveColor, forceTint);
@@ -691,7 +691,7 @@ public class AHBottomNavigation extends FrameLayout {
 				icon.setSelected(false);
 				AHHelper.updateTopMargin(icon, activeMarginTop, inactiveMarginTop);
 				AHHelper.updateLeftMargin(notification, notificationActiveMarginLeft, notificationInactiveMarginLeft);
-				AHHelper.updateTextColor(title, itemActiveColor, itemInactiveColor);
+				AHHelper.updateTextColor(title, titleColorActive, titleColorInactive);
 				AHHelper.updateTextSize(title, activeSize, inactiveSize);
 				AHHelper.updateDrawableColor(context, items.get(currentItem).getDrawable(context), icon,
 						itemActiveColor, itemInactiveColor, forceTint);
@@ -754,7 +754,7 @@ public class AHBottomNavigation extends FrameLayout {
 					AHHelper.updateTopMargin(icon, inactiveMargin, activeMarginTop);
 					AHHelper.updateLeftMargin(notification, notificationInactiveMarginLeft, notificationActiveMarginLeft);
 					AHHelper.updateTopMargin(notification, notificationInactiveMarginTop, notificationActiveMarginTop);
-					AHHelper.updateTextColor(title, itemInactiveColor, itemActiveColor);
+					AHHelper.updateTextColor(title, titleColorInactive, titleColorActive);
 					AHHelper.updateWidth(container, notSelectedItemWidth, selectedItemWidth);
 				}
 
@@ -821,7 +821,7 @@ public class AHBottomNavigation extends FrameLayout {
 					AHHelper.updateTopMargin(icon, activeMarginTop, inactiveMargin);
 					AHHelper.updateLeftMargin(notification, notificationActiveMarginLeft, notificationInactiveMarginLeft);
 					AHHelper.updateTopMargin(notification, notificationActiveMarginTop, notificationInactiveMarginTop);
-					AHHelper.updateTextColor(title, itemActiveColor, itemInactiveColor);
+					AHHelper.updateTextColor(title, titleColorActive, titleColorInactive);
 					AHHelper.updateWidth(container, selectedItemWidth, notSelectedItemWidth);
 				}
 
@@ -1048,6 +1048,26 @@ public class AHBottomNavigation extends FrameLayout {
 	}
 
 	/**
+	 * Set the accent text color (used when the view contains 3 items)
+	 *
+	 * @param accentColor The new accent color
+	 */
+	public void setAccentTextColor(int accentColor) {
+		this.titleColorActive = accentColor;
+		createItems();
+	}
+
+	/**
+	 * Set the accent icon color (used when the view contains 3 items)
+	 *
+	 * @param accentColor The new accent color
+	 */
+	public void setAccentIconColor(int accentColor) {
+		this.itemActiveColor = accentColor;
+		createItems();
+	}
+
+	/**
 	 * Get the inactive color (used when the view contains 3 items)
 	 *
 	 * @return The inactive color
@@ -1063,6 +1083,26 @@ public class AHBottomNavigation extends FrameLayout {
 	 */
 	public void setInactiveColor(int inactiveColor) {
 		this.titleColorInactive = inactiveColor;
+		this.itemInactiveColor = inactiveColor;
+		createItems();
+	}
+
+	/**
+	 * Set the inactive text color (used when the view contains 3 items)
+	 *
+	 * @param inactiveColor The inactive color
+	 */
+	public void setInactiveTextColor(int inactiveColor) {
+		this.titleColorInactive = inactiveColor;
+		createItems();
+	}
+
+	/**
+	 * Set the inactive icon color (used when the view contains 3 items)
+	 *
+	 * @param inactiveColor The inactive color
+	 */
+	public void setInactiveIconColor(int inactiveColor) {
 		this.itemInactiveColor = inactiveColor;
 		createItems();
 	}
