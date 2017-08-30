@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/xanahopper/ahbottomnavigation'
     gitUrl = 'https://github.com/xanahopper/ahbottomnavigation.git'
 
-    libraryVersion = '2.0.11'
+    libraryVersion = '2.0.12'
 
     developerId = 'xanahopper'
     developerName = 'Xana Hopper'
@@ -31,8 +31,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 43
-        versionName "2.0.11"
+        versionCode 44
+        versionName "2.0.12"
     }
     buildTypes {
         release {
