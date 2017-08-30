@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 
@@ -21,11 +23,15 @@ import com.aurelhubert.ahbottomnavigation.notification.AHNotification;
 
 import java.util.ArrayList;
 
+import de.mateware.snacky.Snacky;
+
 public class DemoActivity extends AppCompatActivity {
 
 	private DemoFragment currentFragment;
 	private DemoViewPagerAdapter adapter;
 	private AHBottomNavigationAdapter navigationAdapter;
+	private Toolbar mToolbar;
+	private TabLayout mTabLayout;
 	private ArrayList<AHBottomNavigationItem> bottomNavigationItems = new ArrayList<>();
 	private boolean useMenuResource = true;
 	private int[] tabColors;
@@ -60,6 +66,14 @@ public class DemoActivity extends AppCompatActivity {
 		bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
 		viewPager = (AHBottomNavigationViewPager) findViewById(R.id.view_pager);
 		floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_action_button);
+		mToolbar = (Toolbar) findViewById(R.id.toolbar);
+		mTabLayout = (TabLayout) findViewById(R.id.tablayout);
+
+		mTabLayout.addTab(mTabLayout.newTab().setText("Tab 1"));
+		mTabLayout.addTab(mTabLayout.newTab().setText("Tab 2"));
+		mTabLayout.addTab(mTabLayout.newTab().setText("Tab 3"));
+
+		setSupportActionBar(mToolbar);
 
 		if (useMenuResource) {
 			tabColors = getApplicationContext().getResources().getIntArray(R.array.tab_colors);
@@ -100,6 +114,15 @@ public class DemoActivity extends AppCompatActivity {
 				viewPager.setCurrentItem(position, false);
 				currentFragment = adapter.getCurrentFragment();
 				currentFragment.willBeDisplayed();
+				floatingActionButton.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						Snacky.builder()
+								.setView(bottomNavigation)
+								.success()
+								.setText("实验").show();
+					}
+				});
 
 				if (position == 1) {
 					bottomNavigation.setNotification("", 1);

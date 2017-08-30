@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -23,7 +24,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation.OnNavigationPositio
 /**
  *
  */
-public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollingBehavior<V> {
+public class AHBottomNavigationBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
 
 	private static final Interpolator INTERPOLATOR = new LinearOutSlowInInterpolator();
 	private static final int ANIM_DURATION = 300;
@@ -77,67 +78,43 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 
 	@Override
 	public boolean onDependentViewChanged(CoordinatorLayout parent, V child, View dependency) {
+		if (dependency != null) {
+            if (dependency instanceof Snackbar.SnackbarLayout) {
+                updateSnackbar(child, dependency);
+                return false;
+            } else if (dependency instanceof AppBarLayout) {
+                updateNavigationPosition(child, dependency);
+
+                if (child instanceof AHBottomNavigation) {
+                    Snackbar.SnackbarLayout snackbarLayout = null;
+                    for (View view : parent.getDependencies(child)) {
+                        if (view instanceof Snackbar.SnackbarLayout) {
+                            snackbarLayout = (Snackbar.SnackbarLayout) view;
+                            break;
+                        }
+                    }
+                    if (snackbarLayout != null) {
+                        updateSnackbar(child, snackbarLayout);
+                    }
+                }
+                return false;
+            }
+		}
 		return super.onDependentViewChanged(parent, child, dependency);
 	}
 
-	@Override
+    @Override
 	public void onDependentViewRemoved(CoordinatorLayout parent, V child, View dependency) {
 		super.onDependentViewRemoved(parent, child, dependency);
 	}
 
 	@Override
 	public boolean layoutDependsOn(CoordinatorLayout parent, V child, View dependency) {
-		if (dependency != null && dependency instanceof Snackbar.SnackbarLayout) {
-			updateSnackbar(child, dependency);
-			return true;
+		if (dependency != null) {
+			return dependency instanceof Snackbar.SnackbarLayout ||
+					dependency instanceof AppBarLayout;
 		}
 		return super.layoutDependsOn(parent, child, dependency);
-	}
-
-	@Override
-	public void onNestedVerticalOverScroll(CoordinatorLayout coordinatorLayout, V child, @ScrollDirection int direction, int currentOverScroll, int totalOverScroll) {
-	}
-
-	@Override
-	public void onDirectionNestedPreScroll(CoordinatorLayout coordinatorLayout, V child, View target, int dx, int dy, int[] consumed, @ScrollDirection int scrollDirection) {
-	}
-
-	@Override
-	protected boolean onNestedDirectionFling(CoordinatorLayout coordinatorLayout, V child, View target, float velocityX, float velocityY, @ScrollDirection int scrollDirection) {
-		return false;
-	}
-
-	@Override
-	public void onNestedScroll(CoordinatorLayout coordinatorLayout, V child, View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
-		super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
-		if (dyConsumed < 0) {
-			handleDirection(child, ScrollDirection.SCROLL_DIRECTION_DOWN);
-		} else if (dyConsumed > 0) {
-			handleDirection(child, ScrollDirection.SCROLL_DIRECTION_UP);
-		}
-	}
-
-	@Override
-	public boolean onStartNestedScroll(CoordinatorLayout coordinatorLayout, V child, View directTargetChild, View target, int nestedScrollAxes) {
-		return nestedScrollAxes == ViewCompat.SCROLL_AXIS_VERTICAL || super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, nestedScrollAxes);
-	}
-
-	/**
-	 * Handle scroll direction
-	 * @param child
-	 * @param scrollDirection
-	 */
-	private void handleDirection(V child, int scrollDirection) {
-		if (!behaviorTranslationEnabled) {
-			return;
-		}
-		if (scrollDirection == ScrollDirection.SCROLL_DIRECTION_DOWN && hidden) {
-			hidden = false;
-			animateOffset(child, 0, false, true);
-		} else if (scrollDirection == ScrollDirection.SCROLL_DIRECTION_UP && !hidden) {
-			hidden = true;
-			animateOffset(child, child.getHeight(), false, true);
-		}
 	}
 
 	/**
@@ -304,8 +281,39 @@ public class AHBottomNavigationBehavior<V extends View> extends VerticalScrollin
 			}
 		}
 	}
-	
-	/**
+
+    /**
+     * Update BottomNavigation when AppBarLayout scrolls
+     * @param child BottomNavigation
+     * @param dependency AppBarLayout
+     */
+    private void updateNavigationPosition(V child, View dependency) {
+        if (dependency != null && dependency instanceof AppBarLayout) {
+			AppBarLayout layout = (AppBarLayout) dependency;
+            int top = ((AppBarLayout.Behavior)((CoordinatorLayout.LayoutParams)dependency.getLayoutParams())
+                    .getBehavior()).getTopAndBottomOffset();
+//            int height = dependency.getHeight();
+            int height = getAppBarLayoutExpendHeight(layout);
+            if (height != 0) {
+                float translationY = child.getHeight() * top / height;
+                child.setTranslationY(-translationY);
+            }
+        }
+    }
+
+    private int getAppBarLayoutExpendHeight(AppBarLayout layout) {
+        int height = 0;
+        for (int i = 0; i < layout.getChildCount(); i++) {
+            View child = layout.getChildAt(i);
+            AppBarLayout.LayoutParams lp = (AppBarLayout.LayoutParams) child.getLayoutParams();
+            if ((lp.getScrollFlags() & AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL) != 0) {
+                height += child.getHeight();
+            }
+        }
+        return height;
+    }
+
+    /**
 	 * Is hidden
 	 * @return
 	 */
