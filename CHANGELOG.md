@@ -1,6 +1,16 @@
 ## Changelog
 
-### Newest version: 2.0.6
+### Newest version: 2.1.0
+
+* Update libraries versions
+* Add enable/disable tab state (with custom color)
+* Add new xml attributes (`colored`, `accentColor`, `inactiveColor`, `disableColor`, `coloredActive`, `coloredInactive`)
+* Add param `notificationAnimationDuration`
+* Update getDrawable method with `AppCompatResources.getDrawable(context, drawableRes);`
+If you use drawable selector and target API < 21, don't forget to add this:
+`AppCompatDelegate.setCompatVectorFromResourcesEnabled(true); `
+
+### 2.0.6
 
 * Fix selected item background for API >= 21
 * Fix `isHidden()` method
