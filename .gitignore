@@ -1,13 +1,24 @@
+# Gradle files
+.gradle/
+build/
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Android Studio generated folders
+.navigation/
+captures/
+.externalNativeBuild
+
+# IntelliJ project files
 *.iml
-.gradle
-/local.properties
-/.idea/workspace.xml
-/.idea/libraries
+.idea/
+
+# Misc
 .DS_Store
-/build
-/captures
 
-gen
+# Keystore files
+*.jks
 
-.idea
-*.iml
+# Google Services (e.g. APIs or Firebase)
+google-services.json

@@ -5,10 +5,14 @@ Library to implement the Bottom Navigation component from Material Design guidel
 ## Demo
 <img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo1.gif" width="208" height="368" /> <img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo2.gif" width="208" height="368" /> <img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo3.gif" width="208" height="368" /> <img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo4.gif" width="208" height="368" />
 
-## What's new (2.0.6) - [Changelog](https://github.com/aurelhubert/ahbottomnavigation/blob/master/CHANGELOG.md)
-* Fix selected item background for API >= 21
-* Fix `isHidden()` method
-* Update design support library version
+## What's new (2.1.0) - [Changelog](https://github.com/aurelhubert/ahbottomnavigation/blob/master/CHANGELOG.md)
+* Update libraries versions
+* Add enable/disable tab state (with custom color)
+* Add new xml attributes (`colored`, `accentColor`, `inactiveColor`, `disableColor`, `coloredActive`, `coloredInactive`)
+* Add param `notificationAnimationDuration`
+* Update getDrawable method with `AppCompatResources.getDrawable(context, drawableRes);`
+If you use drawable selector and target API < 21, don't forget to add this:
+`AppCompatDelegate.setCompatVectorFromResourcesEnabled(true); `
 
 ## Features
 * Follow the bottom navigation guidelines (https://www.google.com/design/spec/components/bottom-navigation.html)
@@ -17,13 +21,14 @@ Library to implement the Bottom Navigation component from Material Design guidel
 * Add a OnTabSelectedListener to detect tab selection
 * Support icon font color with "setForceTint(true)"
 * Manage notififcations for each item
+* Enable/disable tab state
 
 ## How to?
 
 ### Gradle
 ```groovy
 dependencies {
-    compile 'com.aurelhubert:ahbottomnavigation:2.0.6'
+    compile 'com.aurelhubert:ahbottomnavigation:2.1.0'
 }
 ```
 ### XML
@@ -110,6 +115,11 @@ AHNotification notification = new AHNotification.Builder()
     .setTextColor(ContextCompat.getColor(DemoActivity.this, R.color.color_notification_text))
      .build();
 bottomNavigation.setNotification(notification, 1);
+
+// Enable / disable item & set disable color
+bottomNavigation.enableItemAtPosition(2);
+bottomNavigation.disableItemAtPosition(2);
+bottomNavigation.setItemDisableColor(Color.parseColor("#3A000000"));
 
 // Set listeners
 bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
