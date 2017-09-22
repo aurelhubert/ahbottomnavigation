@@ -74,6 +74,7 @@ public class DemoActivity extends AppCompatActivity {
 		mTabLayout.addTab(mTabLayout.newTab().setText("Tab 3"));
 
 		setSupportActionBar(mToolbar);
+		getSupportActionBar().setDisplayShowTitleEnabled(true);
 
 		if (useMenuResource) {
 			tabColors = getApplicationContext().getResources().getIntArray(R.array.tab_colors);
@@ -117,10 +118,18 @@ public class DemoActivity extends AppCompatActivity {
 				floatingActionButton.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						Snacky.builder()
+						final Snackbar snackbar = Snacky.builder()
 								.setView(bottomNavigation)
+								.setDuration(Snacky.LENGTH_INDEFINITE)
 								.success()
-								.setText("实验").show();
+								.setText("实验");
+						snackbar.setAction("关闭", new View.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								snackbar.dismiss();
+							}
+						});
+						snackbar.show();
 					}
 				});
 

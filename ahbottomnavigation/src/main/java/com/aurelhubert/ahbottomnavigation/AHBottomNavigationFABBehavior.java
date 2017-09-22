@@ -24,6 +24,11 @@ public class AHBottomNavigationFABBehavior extends CoordinatorLayout.Behavior<Fl
 
     public AHBottomNavigationFABBehavior(int navigationBarHeight) {
         this.navigationBarHeight = navigationBarHeight;
+        Log.d("Behavior", "navigationHeight: " + String.valueOf(navigationBarHeight));
+    }
+
+    public void setNavigationBarHeight(int navigationBarHeight) {
+        this.navigationBarHeight = navigationBarHeight;
     }
 
     @Override
@@ -56,6 +61,10 @@ public class AHBottomNavigationFABBehavior extends CoordinatorLayout.Behavior<Fl
         ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
         int fabDefaultBottomMargin = p.bottomMargin;
         float targetY = dependency.getY() - fabDefaultBottomMargin;
+        int targetMargin = getTargetMargin(parent, child);
+        if (targetMargin < navigationBarHeight) {
+            targetY -= (navigationBarHeight - targetMargin);
+        }
         ensureOrCancelAnimator(child);
         mAnimator.y(targetY)
                 .setDuration(255)
@@ -80,16 +89,30 @@ public class AHBottomNavigationFABBehavior extends CoordinatorLayout.Behavior<Fl
      */
     private void updateFloatingActionButton(FloatingActionButton child, View dependency) {
         if (child != null && dependency != null && dependency instanceof Snackbar.SnackbarLayout) {
-            Log.d("Behavior", "dependency snackbar: " + dependency.getY());
             lastSnackbarUpdate = System.currentTimeMillis();
             ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
             int fabDefaultBottomMargin = p.bottomMargin;
-            child.setY(dependency.getY() - fabDefaultBottomMargin);
+            int targetY = (int) (dependency.getY() - fabDefaultBottomMargin);
+            child.setY(targetY);
         } else if (child != null && dependency != null && dependency instanceof AHBottomNavigation) {
             ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
             int fabDefaultBottomMargin = p.bottomMargin;
-            child.setY(dependency.getY() - fabDefaultBottomMargin);
+            int targetMargin = (int)(dependency.getMeasuredHeight() - dependency.getTranslationY());
+            int targetY = (int) (dependency.getY() - fabDefaultBottomMargin);
+            if (targetMargin < navigationBarHeight) {
+                targetY -= (navigationBarHeight - targetMargin);
+            }
+            child.setY(targetY);
         }
+    }
+
+    private int getTargetMargin(CoordinatorLayout parent, FloatingActionButton child) {
+        for (View view: parent.getDependencies(child)) {
+            if (view instanceof AHBottomNavigation) {
+                return (int) (view.getMeasuredHeight() - view.getTranslationY());
+            }
+        }
+        return 0;
     }
 
 }

@@ -78,6 +78,7 @@ public class AHBottomNavigation extends FrameLayout {
 	private ArrayList<AHBottomNavigationItem> items = new ArrayList<>();
 	private ArrayList<View> views = new ArrayList<>();
 	private AHBottomNavigationBehavior<AHBottomNavigation> bottomNavigationBehavior;
+	private AHBottomNavigationFABBehavior fabBehavior;
 	private LinearLayout linearLayoutContainer;
 	private View backgroundColorView;
 	private Animator circleRevealAnim;
@@ -296,7 +297,12 @@ public class AHBottomNavigation extends FrameLayout {
 		}
 
 		typedValue.recycle();
-
+		if (bottomNavigationBehavior != null && translucentNavigation) {
+			bottomNavigationBehavior.setBehaviorTranslationEnabled(translucentNavigationEnabled, navigationBarHeight);
+		}
+		if (fabBehavior != null && translucentNavigation) {
+			fabBehavior.setNavigationBarHeight(navigationBarHeight);
+		}
 		return layoutHeight;
 	}
 
@@ -1210,7 +1216,7 @@ public class AHBottomNavigation extends FrameLayout {
 	 */
 	public void manageFloatingActionButtonBehavior(FloatingActionButton fab) {
 		if (fab.getParent() instanceof CoordinatorLayout) {
-			AHBottomNavigationFABBehavior fabBehavior = new AHBottomNavigationFABBehavior(navigationBarHeight);
+			fabBehavior = new AHBottomNavigationFABBehavior(navigationBarHeight);
 			((CoordinatorLayout.LayoutParams) fab.getLayoutParams())
 					.setBehavior(fabBehavior);
 		}
