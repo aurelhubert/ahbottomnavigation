@@ -4,20 +4,20 @@ ext {
     bintrayRepo = 'maven'
     bintrayName = 'ah-bottom-navigation'
 
-    publishedGroupId = 'com.aurelhubert'
+    publishedGroupId = 'tech.xana.android'
     libraryName = 'AHBottomNavigation'
     artifact = 'ahbottomnavigation'
 
     libraryDescription = 'A library to reproduce the behavior of the Bottom Navigation guidelines from Material Design.'
 
-    siteUrl = 'https://github.com/aurelhubert/ahbottomnavigation'
-    gitUrl = 'https://github.com/aurelhubert/ahbottomnavigation.git'
+    siteUrl = 'https://github.com/xanahopper/ahbottomnavigation'
+    gitUrl = 'https://github.com/xanahopper/ahbottomnavigation.git'
 
     libraryVersion = '2.1.0'
 
-    developerId = 'aurelhubert'
-    developerName = 'Aurelien Hubert'
-    developerEmail = 'aurel.hubert@gmail.com'
+    developerId = 'xanahopper'
+    developerName = 'Xana Hopper'
+    developerEmail = 'xanahopper@163.com'
 
     licenseName = 'The Apache Software License, Version 2.0'
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
