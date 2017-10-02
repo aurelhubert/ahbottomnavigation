@@ -13,7 +13,7 @@ ext {
     siteUrl = 'https://github.com/aurelhubert/ahbottomnavigation'
     gitUrl = 'https://github.com/aurelhubert/ahbottomnavigation.git'
 
-    libraryVersion = '2.0.6'
+    libraryVersion = '2.1.0'
 
     developerId = 'aurelhubert'
     developerName = 'Aurelien Hubert'
@@ -26,13 +26,13 @@ ext {
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    buildToolsVersion '25.0.3'
 
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 39
-        versionName "2.0.6"
+        versionCode 40
+        versionName "2.1.0"
     }
     buildTypes {
         release {
@@ -43,9 +43,11 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:design:25.2.0'
+    compile 'com.android.support:design:25.3.1'
 }
 
 // Place it at the end of the file
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+if (project.rootProject.file('local.properties').exists()) {
+    apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+    apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+}

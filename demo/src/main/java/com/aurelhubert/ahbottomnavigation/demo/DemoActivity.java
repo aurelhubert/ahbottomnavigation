@@ -3,6 +3,7 @@ package com.aurelhubert.ahbottomnavigation.demo;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
@@ -10,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 
@@ -51,12 +53,16 @@ public class DemoActivity extends AppCompatActivity {
 		super.onDestroy();
 		handler.removeCallbacksAndMessages(null);
 	}
-
+	
 	/**
 	 * Init UI
 	 */
 	private void initUI() {
-
+		
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+			AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+		}
+		
 		bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
 		bottomNavigation.setForceTint(false); 	// false : ignore tint color, apply selected icon
 												// true : apply tint color, ignore selected icon
@@ -100,6 +106,11 @@ public class DemoActivity extends AppCompatActivity {
 				}
 
 				viewPager.setCurrentItem(position, false);
+				
+				if (currentFragment == null) {
+					return true;
+				}
+				
 				currentFragment = adapter.getCurrentFragment();
 				currentFragment.willBeDisplayed();
 
@@ -177,7 +188,7 @@ public class DemoActivity extends AppCompatActivity {
 				return true;
 			}
 		});
-
+		
 		/*
 		bottomNavigation.setOnNavigationPositionListener(new AHBottomNavigation.OnNavigationPositionListener() {
 			@Override public void onPositionChange(int y) {
@@ -207,7 +218,7 @@ public class DemoActivity extends AppCompatActivity {
 
 			}
 		}, 3000);
-
+		
 		//bottomNavigation.setDefaultBackgroundResource(R.drawable.bottom_navigation_background);
 	}
 
