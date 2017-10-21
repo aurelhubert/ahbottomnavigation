@@ -83,7 +83,8 @@ public class DemoActivity extends AppCompatActivity {
 			bottomNavigation.addItems(bottomNavigationItems);
 		}
 
-		bottomNavigation.manageFloatingActionButtonBehavior(floatingActionButton);
+		// For Android support library FAB factor of 1.0f is good
+		bottomNavigation.manageFloatingActionButtonBehavior(floatingActionButton, 1.0f);
 		bottomNavigation.setTranslucentNavigationEnabled(true);
 
 		bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {

@@ -16,7 +16,6 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
@@ -1246,11 +1245,14 @@ public class AHBottomNavigation extends FrameLayout {
 
 	/**
 	 * Manage the floating action button behavior with AHBottomNavigation
+	 * Method could also be used with custom libraries for FAB such as Clans/FloatingActionButton.
+	 * Factor added to adjust the Y based on the FAB used.
+	 * TIP: Factor of 1.48f works well for Clans/FloatingActionButton
 	 * @param fab Floating Action Button
 	 */
-	public void manageFloatingActionButtonBehavior(FloatingActionButton fab) {
+	public <T extends View> void manageFloatingActionButtonBehavior(T fab, float factor) {
 		if (fab.getParent() instanceof CoordinatorLayout) {
-			AHBottomNavigationFABBehavior fabBehavior = new AHBottomNavigationFABBehavior(navigationBarHeight);
+			AHBottomNavigationFABBehavior fabBehavior = new AHBottomNavigationFABBehavior(navigationBarHeight, factor);
 			((CoordinatorLayout.LayoutParams) fab.getLayoutParams())
 					.setBehavior(fabBehavior);
 		}
