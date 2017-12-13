@@ -19,6 +19,8 @@
     <dimen name="bottom_navigation_text_size_forced_active">11sp</dimen>
     <dimen name="bottom_navigation_text_size_forced_inactive">10sp</dimen>
 
+    <dimen name="bottom_navigation_divider_width">1dp</dimen>
+
     <!-- Small -->
     <dimen name="bottom_navigation_small_active_min_width">96dp</dimen>
     <dimen name="bottom_navigation_small_active_max_width">168dp</dimen>

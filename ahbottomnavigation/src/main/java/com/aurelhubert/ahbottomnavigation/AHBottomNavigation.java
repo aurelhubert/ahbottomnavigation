@@ -14,7 +14,9 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
+import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.Px;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -110,6 +112,9 @@ public class AHBottomNavigation extends FrameLayout {
 	private float selectedItemWidth, notSelectedItemWidth;
 	private boolean forceTint = false;
 	private TitleState titleState = TitleState.SHOW_WHEN_ACTIVE;
+	private boolean showDividers = false;
+	private @ColorInt int dividerColor;
+	private @Px int dividerWidth;
 
 	// Notifications
 	private @ColorInt int notificationTextColor;
@@ -395,6 +400,17 @@ public class AHBottomNavigation extends FrameLayout {
 		}
 
 		for (int i = 0; i < items.size(); i++) {
+
+			if (showDividers) {
+				if (i > 0) {
+					View separator = new View(getContext());
+					separator.setBackgroundColor(dividerColor);
+
+					LayoutParams params = new LayoutParams(dividerWidth, (int) height);
+					linearLayout.addView(separator, params);
+				}
+			}
+
 			final boolean current = currentItem == i;
 			final int itemIndex = i;
 			AHBottomNavigationItem item = items.get(itemIndex);
@@ -499,7 +515,14 @@ public class AHBottomNavigation extends FrameLayout {
 			return;
 		}
 
-		float itemWidth = layoutWidth / items.size();
+//		// TODO if has dividers
+		float itemWidth;
+//		if (showDividers) {
+//			int divCount = items.size() - 1;
+//			itemWidth = (layoutWidth - divCount * 5 /* TODO divider width */) / items.size(); // TODO pass width from implementation
+//		} else {
+			itemWidth = layoutWidth / items.size();
+//		}
 
 		if (itemWidth < minWidth) {
 			itemWidth = minWidth;
@@ -516,6 +539,16 @@ public class AHBottomNavigation extends FrameLayout {
 
 
 		for (int i = 0; i < items.size(); i++) {
+
+			if (showDividers) {
+				if (i > 0) {
+					View separator = new View(getContext());
+					separator.setBackgroundColor(dividerColor);
+
+					LayoutParams params = new LayoutParams(dividerWidth, (int) height);
+					linearLayout.addView(separator, params);
+				}
+			}
 
 			final int itemIndex = i;
 			AHBottomNavigationItem item = items.get(itemIndex);
@@ -1363,6 +1396,40 @@ public class AHBottomNavigation extends FrameLayout {
 	 */
 	public void setTitleState(TitleState titleState) {
 		this.titleState = titleState;
+		createItems();
+	}
+
+	/**
+	 * Return the current state of the divider shown flag
+	 *
+	 * @return true if dividers are enabled
+	 */
+	public boolean isShowDividers() {
+		return showDividers;
+	}
+
+	/**
+	 * Add dividers separating each item with default configuration (color and width)
+	 *
+	 * @param showDividers true if dividers should be enabled
+	 */
+	public void showDividers(boolean showDividers) {
+		showDividers(showDividers, R.color.colorBottomNavigationDivider, R.dimen.bottom_navigation_divider_width);
+	}
+
+	/**
+	 * Add dividers separating each item with custom configuration (color and width)
+	 *
+	 * @param showDividers true if dividers should be enabled
+	 * @param colorRes resource for the divider color
+	 * @param widthRes resource for the divider width
+	 */
+	public void showDividers(boolean showDividers, @ColorRes int colorRes, @DimenRes int widthRes) {
+		this.showDividers = showDividers;
+		if (showDividers) {
+			this.dividerColor = ContextCompat.getColor(getContext(), colorRes);
+			this.dividerWidth = resources.getDimensionPixelSize(widthRes);
+		}
 		createItems();
 	}
 

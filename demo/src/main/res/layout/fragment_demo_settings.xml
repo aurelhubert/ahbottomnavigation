@@ -40,4 +40,10 @@
         android:checked="false"
         android:text="Enable translucent navigation" />
 
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/fragment_demo_dividers"
+        style="@style/setting"
+        android:checked="false"
+        android:text="Enable dividers" />
+
 </LinearLayout>
