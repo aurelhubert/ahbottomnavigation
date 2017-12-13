@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.res.Resources;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -255,5 +256,18 @@ public class AHHelper {
 			context = wrapper.getBaseContext();
 		}
 		return (Activity) context;
+	}
+
+	/**
+	 * Update icon size if requested
+	 */
+	public static void updateIconSize(AHBottomNavigationItem item, ImageView icon, Resources res) {
+		AHBottomNavigationItem.IconSize iconSize = item.getIconSize();
+		if (iconSize != null) {
+			ViewGroup.LayoutParams iconParams = icon.getLayoutParams();
+			iconParams.width = res.getDimensionPixelSize(iconSize.getWidthRes());
+			iconParams.height = res.getDimensionPixelSize(iconSize.getHeightRes());
+			icon.setLayoutParams(iconParams);
+		}
 	}
 }

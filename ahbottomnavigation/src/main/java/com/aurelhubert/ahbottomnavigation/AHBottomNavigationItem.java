@@ -6,7 +6,9 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
+import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.content.res.AppCompatResources;
@@ -30,6 +32,9 @@ public class AHBottomNavigationItem {
 	private
 	@ColorRes
 	int colorRes = 0;
+
+	// optional
+	private @Nullable IconSize iconSize;
 	
 	/**
 	 * Constructor
@@ -144,5 +149,34 @@ public class AHBottomNavigationItem {
 	public void setDrawable(Drawable drawable) {
 		this.drawable = drawable;
 		this.drawableRes = 0;
+	}
+
+	public AHBottomNavigationItem setIconSize(@Nullable IconSize iconSize) {
+		this.iconSize = iconSize;
+		return this;
+	}
+
+	@Nullable
+	public IconSize getIconSize() {
+		return iconSize;
+	}
+
+	public static class IconSize {
+
+		private final @DimenRes int widthRes;
+		private final @DimenRes int heightRes;
+
+		public IconSize(int widthRes, int heightRes) {
+			this.widthRes = widthRes;
+			this.heightRes = heightRes;
+		}
+
+		public int getWidthRes() {
+			return widthRes;
+		}
+
+		public int getHeightRes() {
+			return heightRes;
+		}
 	}
 }

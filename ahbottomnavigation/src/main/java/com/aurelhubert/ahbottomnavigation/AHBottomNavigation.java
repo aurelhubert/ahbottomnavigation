@@ -424,6 +424,8 @@ public class AHBottomNavigation extends FrameLayout {
 			icon.setImageDrawable(item.getDrawable(context));
 			title.setText(item.getTitle(context));
 
+			AHHelper.updateIconSize(item, icon, resources);
+
 			if (titleTypeface != null) {
 				title.setTypeface(titleTypeface);
 			}
@@ -551,6 +553,8 @@ public class AHBottomNavigation extends FrameLayout {
 			TextView title = (TextView) view.findViewById(R.id.bottom_navigation_small_item_title);
 			TextView notification = (TextView) view.findViewById(R.id.bottom_navigation_notification);
 			icon.setImageDrawable(item.getDrawable(context));
+
+			AHHelper.updateIconSize(item, icon, resources);
 
 			if (titleState != TitleState.ALWAYS_HIDE) {
 				title.setText(item.getTitle(context));
