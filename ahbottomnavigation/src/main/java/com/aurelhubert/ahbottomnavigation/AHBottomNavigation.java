@@ -515,14 +515,7 @@ public class AHBottomNavigation extends FrameLayout {
 			return;
 		}
 
-//		// TODO if has dividers
-		float itemWidth;
-//		if (showDividers) {
-//			int divCount = items.size() - 1;
-//			itemWidth = (layoutWidth - divCount * 5 /* TODO divider width */) / items.size(); // TODO pass width from implementation
-//		} else {
-			itemWidth = layoutWidth / items.size();
-//		}
+		float itemWidth = layoutWidth / items.size();
 
 		if (itemWidth < minWidth) {
 			itemWidth = minWidth;
