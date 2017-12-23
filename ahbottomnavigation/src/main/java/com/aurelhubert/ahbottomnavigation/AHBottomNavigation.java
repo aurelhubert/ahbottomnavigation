@@ -14,7 +14,9 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
+import android.support.annotation.DimenRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.Px;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
@@ -110,10 +112,14 @@ public class AHBottomNavigation extends FrameLayout {
 	private float selectedItemWidth, notSelectedItemWidth;
 	private boolean forceTint = false;
 	private TitleState titleState = TitleState.SHOW_WHEN_ACTIVE;
+	private boolean showDividers = false;
+	private @ColorInt int dividerColor;
+	private @Px int dividerWidth;
 
 	// Notifications
 	private @ColorInt int notificationTextColor;
 	private @ColorInt int notificationBackgroundColor;
+	private @DrawableRes int notificationBackgroundResId;
 	private Drawable notificationBackgroundDrawable;
 	private Typeface notificationTypeface;
 	private int notificationActiveMarginLeft, notificationInactiveMarginLeft;
@@ -395,6 +401,17 @@ public class AHBottomNavigation extends FrameLayout {
 		}
 
 		for (int i = 0; i < items.size(); i++) {
+
+			if (showDividers) {
+				if (i > 0) {
+					View separator = new View(getContext());
+					separator.setBackgroundColor(dividerColor);
+
+					LayoutParams params = new LayoutParams(dividerWidth, (int) height);
+					linearLayout.addView(separator, params);
+				}
+			}
+
 			final boolean current = currentItem == i;
 			final int itemIndex = i;
 			AHBottomNavigationItem item = items.get(itemIndex);
@@ -407,6 +424,8 @@ public class AHBottomNavigation extends FrameLayout {
 
 			icon.setImageDrawable(item.getDrawable(context));
 			title.setText(item.getTitle(context));
+
+			AHHelper.updateIconSize(item, icon, resources);
 
 			if (titleTypeface != null) {
 				title.setTypeface(titleTypeface);
@@ -517,6 +536,16 @@ public class AHBottomNavigation extends FrameLayout {
 
 		for (int i = 0; i < items.size(); i++) {
 
+			if (showDividers) {
+				if (i > 0) {
+					View separator = new View(getContext());
+					separator.setBackgroundColor(dividerColor);
+
+					LayoutParams params = new LayoutParams(dividerWidth, (int) height);
+					linearLayout.addView(separator, params);
+				}
+			}
+
 			final int itemIndex = i;
 			AHBottomNavigationItem item = items.get(itemIndex);
 
@@ -525,6 +554,8 @@ public class AHBottomNavigation extends FrameLayout {
 			TextView title = (TextView) view.findViewById(R.id.bottom_navigation_small_item_title);
 			TextView notification = (TextView) view.findViewById(R.id.bottom_navigation_notification);
 			icon.setImageDrawable(item.getDrawable(context));
+
+			AHHelper.updateIconSize(item, icon, resources);
 
 			if (titleState != TitleState.ALWAYS_HIDE) {
 				title.setText(item.getTitle(context));
@@ -895,6 +926,7 @@ public class AHBottomNavigation extends FrameLayout {
 			final AHNotification notificationItem = notifications.get(i);
 			final int currentTextColor = AHNotificationHelper.getTextColor(notificationItem, notificationTextColor);
 			final int currentBackgroundColor = AHNotificationHelper.getBackgroundColor(notificationItem, notificationBackgroundColor);
+			final Drawable currentBackgroundDrawable = AHNotificationHelper.getBackgroundDrawable(getContext(), notificationItem, notificationBackgroundResId);
 
 			TextView notification = (TextView) views.get(i).findViewById(R.id.bottom_navigation_notification);
 
@@ -909,22 +941,30 @@ public class AHBottomNavigation extends FrameLayout {
 					notification.setTypeface(null, Typeface.BOLD);
 				}
 
-				if (notificationBackgroundDrawable != null) {
+				if (currentBackgroundDrawable != null) {
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+						notification.setBackground(currentBackgroundDrawable);
+					} else {
+						notification.setBackgroundDrawable(currentBackgroundDrawable);
+					}
+
+				} else if (notificationBackgroundDrawable != null) {
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 						Drawable drawable = notificationBackgroundDrawable.getConstantState().newDrawable();
 						notification.setBackground(drawable);
 					} else {
 						notification.setBackgroundDrawable(notificationBackgroundDrawable);
 					}
-
-				} else if (currentBackgroundColor != 0) {
-					Drawable defautlDrawable = ContextCompat.getDrawable(context, R.drawable.notification_background);
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-						notification.setBackground(AHHelper.getTintDrawable(defautlDrawable,
-								currentBackgroundColor, forceTint));
-					} else {
-						notification.setBackgroundDrawable(AHHelper.getTintDrawable(defautlDrawable,
-								currentBackgroundColor, forceTint));
+				} else {
+					if (currentBackgroundColor != 0) {
+						Drawable defautlDrawable = ContextCompat.getDrawable(context, R.drawable.notification_background);
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+							notification.setBackground(AHHelper.getTintDrawable(defautlDrawable,
+									currentBackgroundColor, forceTint));
+						} else {
+							notification.setBackgroundDrawable(AHHelper.getTintDrawable(defautlDrawable,
+									currentBackgroundColor, forceTint));
+						}
 					}
 				}
 			}
@@ -1367,6 +1407,40 @@ public class AHBottomNavigation extends FrameLayout {
 	}
 
 	/**
+	 * Return the current state of the divider shown flag
+	 *
+	 * @return true if dividers are enabled
+	 */
+	public boolean isShowDividers() {
+		return showDividers;
+	}
+
+	/**
+	 * Add dividers separating each item with default configuration (color and width)
+	 *
+	 * @param showDividers true if dividers should be enabled
+	 */
+	public void showDividers(boolean showDividers) {
+		showDividers(showDividers, R.color.colorBottomNavigationDivider, R.dimen.bottom_navigation_divider_width);
+	}
+
+	/**
+	 * Add dividers separating each item with custom configuration (color and width)
+	 *
+	 * @param showDividers true if dividers should be enabled
+	 * @param colorRes resource for the divider color
+	 * @param widthRes resource for the divider width
+	 */
+	public void showDividers(boolean showDividers, @ColorRes int colorRes, @DimenRes int widthRes) {
+		this.showDividers = showDividers;
+		if (showDividers) {
+			this.dividerColor = ContextCompat.getColor(getContext(), colorRes);
+			this.dividerWidth = resources.getDimensionPixelSize(widthRes);
+		}
+		createItems();
+	}
+
+	/**
 	 * Set AHOnTabSelectedListener
 	 */
 	public void setOnTabSelectedListener(OnTabSelectedListener tabSelectedListener) {
@@ -1430,6 +1504,20 @@ public class AHBottomNavigation extends FrameLayout {
         updateNotifications(false, itemPosition);
     }
 
+	/**
+	 * Set notification text
+	 *
+	 * @param iconResId    int
+	 * @param itemPosition int
+	 */
+	public void setNotificationIcon(@DrawableRes int iconResId, int itemPosition) {
+		if (itemPosition < 0 || itemPosition > items.size() - 1) {
+			throw new IndexOutOfBoundsException(String.format(Locale.US, EXCEPTION_INDEX_OUT_OF_BOUNDS, itemPosition, items.size()));
+		}
+		notifications.set(itemPosition, AHNotification.justIcon(iconResId));
+		updateNotifications(true, itemPosition);
+	}
+
     /**
      * Set fully customized Notification
      *
@@ -1476,6 +1564,17 @@ public class AHBottomNavigation extends FrameLayout {
 		this.notificationBackgroundDrawable = drawable;
 		updateNotifications(true, UPDATE_ALL_NOTIFICATIONS);
 	}
+
+	/**
+	 * Set notification background resource
+	 *
+	 * @param drawableResId int
+	 */
+	public void setNotificationBackgroundResource(@DrawableRes int drawableResId) {
+		this.notificationBackgroundDrawable = ContextCompat.getDrawable(getContext(), drawableResId);
+		updateNotifications(true, UPDATE_ALL_NOTIFICATIONS);
+	}
+
 
 	/**
 	 * Set notification background color

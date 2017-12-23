@@ -295,6 +295,13 @@ public class DemoActivity extends AppCompatActivity {
 	}
 
 	/**
+	 * Show or hide dividers
+	 */
+	public void setShowDividers(boolean showDividers) {
+		bottomNavigation.showDividers(showDividers);
+	}
+
+	/**
 	 * Reload activity
 	 */
 	public void reload() {
