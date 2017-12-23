@@ -119,6 +119,7 @@ public class AHBottomNavigation extends FrameLayout {
 	// Notifications
 	private @ColorInt int notificationTextColor;
 	private @ColorInt int notificationBackgroundColor;
+	private @DrawableRes int notificationBackgroundResId;
 	private Drawable notificationBackgroundDrawable;
 	private Typeface notificationTypeface;
 	private int notificationActiveMarginLeft, notificationInactiveMarginLeft;
@@ -925,6 +926,7 @@ public class AHBottomNavigation extends FrameLayout {
 			final AHNotification notificationItem = notifications.get(i);
 			final int currentTextColor = AHNotificationHelper.getTextColor(notificationItem, notificationTextColor);
 			final int currentBackgroundColor = AHNotificationHelper.getBackgroundColor(notificationItem, notificationBackgroundColor);
+			final Drawable currentBackgroundDrawable = AHNotificationHelper.getBackgroundDrawable(getContext(), notificationItem, notificationBackgroundResId);
 
 			TextView notification = (TextView) views.get(i).findViewById(R.id.bottom_navigation_notification);
 
@@ -939,22 +941,30 @@ public class AHBottomNavigation extends FrameLayout {
 					notification.setTypeface(null, Typeface.BOLD);
 				}
 
-				if (notificationBackgroundDrawable != null) {
+				if (currentBackgroundDrawable != null) {
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+						notification.setBackground(currentBackgroundDrawable);
+					} else {
+						notification.setBackgroundDrawable(currentBackgroundDrawable);
+					}
+
+				} else if (notificationBackgroundDrawable != null) {
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 						Drawable drawable = notificationBackgroundDrawable.getConstantState().newDrawable();
 						notification.setBackground(drawable);
 					} else {
 						notification.setBackgroundDrawable(notificationBackgroundDrawable);
 					}
-
-				} else if (currentBackgroundColor != 0) {
-					Drawable defautlDrawable = ContextCompat.getDrawable(context, R.drawable.notification_background);
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-						notification.setBackground(AHHelper.getTintDrawable(defautlDrawable,
-								currentBackgroundColor, forceTint));
-					} else {
-						notification.setBackgroundDrawable(AHHelper.getTintDrawable(defautlDrawable,
-								currentBackgroundColor, forceTint));
+				} else {
+					if (currentBackgroundColor != 0) {
+						Drawable defautlDrawable = ContextCompat.getDrawable(context, R.drawable.notification_background);
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+							notification.setBackground(AHHelper.getTintDrawable(defautlDrawable,
+									currentBackgroundColor, forceTint));
+						} else {
+							notification.setBackgroundDrawable(AHHelper.getTintDrawable(defautlDrawable,
+									currentBackgroundColor, forceTint));
+						}
 					}
 				}
 			}
@@ -1494,6 +1504,20 @@ public class AHBottomNavigation extends FrameLayout {
         updateNotifications(false, itemPosition);
     }
 
+	/**
+	 * Set notification text
+	 *
+	 * @param iconResId    int
+	 * @param itemPosition int
+	 */
+	public void setNotificationIcon(@DrawableRes int iconResId, int itemPosition) {
+		if (itemPosition < 0 || itemPosition > items.size() - 1) {
+			throw new IndexOutOfBoundsException(String.format(Locale.US, EXCEPTION_INDEX_OUT_OF_BOUNDS, itemPosition, items.size()));
+		}
+		notifications.set(itemPosition, AHNotification.justIcon(iconResId));
+		updateNotifications(true, itemPosition);
+	}
+
     /**
      * Set fully customized Notification
      *
@@ -1540,6 +1564,17 @@ public class AHBottomNavigation extends FrameLayout {
 		this.notificationBackgroundDrawable = drawable;
 		updateNotifications(true, UPDATE_ALL_NOTIFICATIONS);
 	}
+
+	/**
+	 * Set notification background resource
+	 *
+	 * @param drawableResId int
+	 */
+	public void setNotificationBackgroundResource(@DrawableRes int drawableResId) {
+		this.notificationBackgroundDrawable = ContextCompat.getDrawable(getContext(), drawableResId);
+		updateNotifications(true, UPDATE_ALL_NOTIFICATIONS);
+	}
+
 
 	/**
 	 * Set notification background color

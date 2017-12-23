@@ -3,6 +3,7 @@ package com.aurelhubert.ahbottomnavigation.notification;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
@@ -23,6 +24,9 @@ public class AHNotification implements Parcelable {
     @ColorInt
     private int backgroundColor; // if 0 then use default value
 
+    @DrawableRes
+    private int backgroundResId; // if 0 then use default value
+
     public AHNotification() {
         // empty
     }
@@ -31,6 +35,7 @@ public class AHNotification implements Parcelable {
         text = in.readString();
         textColor = in.readInt();
         backgroundColor = in.readInt();
+        backgroundResId = in.readInt();
     }
 
     public boolean isEmpty() {
@@ -49,8 +54,16 @@ public class AHNotification implements Parcelable {
         return backgroundColor;
     }
 
+    public int getBackgroundResId() {
+        return backgroundResId;
+    }
+
     public static AHNotification justText(String text) {
         return new Builder().setText(text).build();
+    }
+
+    public static AHNotification justIcon(@DrawableRes int iconResId) {
+        return new Builder().setBackgroundColor(0).setBackgroundResId(iconResId).setText(" ").build();
     }
 
     public static List<AHNotification> generateEmptyList(int size) {
@@ -71,6 +84,7 @@ public class AHNotification implements Parcelable {
         dest.writeString(text);
         dest.writeInt(textColor);
         dest.writeInt(backgroundColor);
+        dest.writeInt(backgroundResId);
     }
 
     public static class Builder {
@@ -80,6 +94,8 @@ public class AHNotification implements Parcelable {
         private int textColor;
         @ColorInt
         private int backgroundColor;
+        @DrawableRes
+        private int backgroundResId;
 
         public Builder setText(String text) {
             this.text = text;
@@ -96,11 +112,17 @@ public class AHNotification implements Parcelable {
             return this;
         }
 
+        public Builder setBackgroundResId(@DrawableRes int backgroundResId) {
+            this.backgroundResId = backgroundResId;
+            return this;
+        }
+
         public AHNotification build() {
             AHNotification notification = new AHNotification();
             notification.text = text;
             notification.textColor = textColor;
             notification.backgroundColor = backgroundColor;
+            notification.backgroundResId = backgroundResId;
             return notification;
         }
     }
