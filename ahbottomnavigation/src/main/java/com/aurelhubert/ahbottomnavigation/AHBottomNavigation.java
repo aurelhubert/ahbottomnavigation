@@ -422,6 +422,7 @@ public class AHBottomNavigation extends FrameLayout {
 				if (selectedBackgroundVisible) {
 					view.setSelected(true);
 				}
+				updateNotificationMarginForPosition(currentItem, i);
 				icon.setSelected(true);
 				// Update margins (icon & notification)
 				if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
@@ -430,16 +431,17 @@ public class AHBottomNavigation extends FrameLayout {
 
 					ViewGroup.MarginLayoutParams paramsNotification = (ViewGroup.MarginLayoutParams)
 							notification.getLayoutParams();
-					paramsNotification.setMargins(notificationActiveMarginLeft, paramsNotification.topMargin,
+					paramsNotification.setMargins(notificationActiveMarginLeft, notificationActiveMarginTop,
 							paramsNotification.rightMargin, paramsNotification.bottomMargin);
 
 					view.requestLayout();
 				}
 			} else {
+				updateNotificationMarginForPosition(currentItem, i);
 				icon.setSelected(false);
 				ViewGroup.MarginLayoutParams paramsNotification = (ViewGroup.MarginLayoutParams)
 						notification.getLayoutParams();
-				paramsNotification.setMargins(notificationInactiveMarginLeft, paramsNotification.topMargin,
+				paramsNotification.setMargins(notificationInactiveMarginLeft, notificationInactiveMarginTop,
 						paramsNotification.rightMargin, paramsNotification.bottomMargin);
 			}
 
@@ -516,7 +518,6 @@ public class AHBottomNavigation extends FrameLayout {
 		itemWidth -= difference;
 		notSelectedItemWidth = itemWidth;
 
-
 		for (int i = 0; i < items.size(); i++) {
 
 			final int itemIndex = i;
@@ -546,6 +547,7 @@ public class AHBottomNavigation extends FrameLayout {
 				}
 				icon.setSelected(true);
 				// Update margins (icon & notification)
+				updateNotificationMarginForPosition(currentItem, i);
 
 				if (titleState != TitleState.ALWAYS_HIDE) {
 					if (view.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
@@ -561,6 +563,7 @@ public class AHBottomNavigation extends FrameLayout {
 					}
 				}
 			} else {
+				updateNotificationMarginForPosition(currentItem, i);
 				icon.setSelected(false);
 				ViewGroup.MarginLayoutParams paramsNotification = (ViewGroup.MarginLayoutParams)
 						notification.getLayoutParams();
@@ -662,9 +665,11 @@ public class AHBottomNavigation extends FrameLayout {
 				final ImageView icon = (ImageView) view.findViewById(R.id.bottom_navigation_item_icon);
 				final TextView notification = (TextView) view.findViewById(R.id.bottom_navigation_notification);
 
+				updateNotificationMarginForPosition(itemIndex, i);
 				icon.setSelected(true);
 				AHHelper.updateTopMargin(icon, inactiveMarginTop, activeMarginTop);
 				AHHelper.updateLeftMargin(notification, notificationInactiveMarginLeft, notificationActiveMarginLeft);
+				AHHelper.updateTopMargin(notification, notificationInactiveMarginTop, notificationActiveMarginTop);
 				AHHelper.updateTextColor(title, itemInactiveColor, itemActiveColor);
 				AHHelper.updateTextSize(title, inactiveSize, activeSize);
 				AHHelper.updateDrawableColor(context, items.get(itemIndex).getDrawable(context), icon,
@@ -723,9 +728,11 @@ public class AHBottomNavigation extends FrameLayout {
 				final ImageView icon = (ImageView) view.findViewById(R.id.bottom_navigation_item_icon);
 				final TextView notification = (TextView) view.findViewById(R.id.bottom_navigation_notification);
 
+				updateNotificationMarginForPosition(itemIndex, i);
 				icon.setSelected(false);
 				AHHelper.updateTopMargin(icon, activeMarginTop, inactiveMarginTop);
 				AHHelper.updateLeftMargin(notification, notificationActiveMarginLeft, notificationInactiveMarginLeft);
+				AHHelper.updateTopMargin(notification, notificationActiveMarginTop, notificationInactiveMarginTop);
 				AHHelper.updateTextColor(title, itemActiveColor, itemInactiveColor);
 				AHHelper.updateTextSize(title, activeSize, inactiveSize);
 				AHHelper.updateDrawableColor(context, items.get(currentItem).getDrawable(context), icon,
@@ -851,6 +858,7 @@ public class AHBottomNavigation extends FrameLayout {
 				final TextView notification = (TextView) view.findViewById(R.id.bottom_navigation_notification);
 
 				icon.setSelected(false);
+				updateNotificationMarginForPosition(itemIndex, i);
 
 				if (titleState != TitleState.ALWAYS_HIDE) {
 					AHHelper.updateTopMargin(icon, activeMarginTop, inactiveMargin);
@@ -897,6 +905,7 @@ public class AHBottomNavigation extends FrameLayout {
 			final AHNotification notificationItem = notifications.get(i);
 			final int currentTextColor = AHNotificationHelper.getTextColor(notificationItem, notificationTextColor);
 			final int currentBackgroundColor = AHNotificationHelper.getBackgroundColor(notificationItem, notificationBackgroundColor);
+			updateNotificationMarginForPosition(itemPosition, i);
 
 			TextView notification = (TextView) views.get(i).findViewById(R.id.bottom_navigation_notification);
 
@@ -929,6 +938,10 @@ public class AHBottomNavigation extends FrameLayout {
 								currentBackgroundColor, forceTint));
 					}
 				}
+				ViewGroup.MarginLayoutParams paramsNotification = (ViewGroup.MarginLayoutParams)
+						notification.getLayoutParams();
+				paramsNotification.setMargins(notificationInactiveMarginLeft, notificationInactiveMarginTop,
+						paramsNotification.rightMargin, paramsNotification.bottomMargin);
 			}
 
 			if (notificationItem.isEmpty() && notification.getText().length() > 0) {
@@ -959,6 +972,23 @@ public class AHBottomNavigation extends FrameLayout {
 		}
 	}
 
+	private void updateNotificationMarginForPosition(int selectedPosition, int position) {
+		switch (titleState) {
+			case ALWAYS_SHOW:
+				notificationInactiveMarginTop = (int) resources.getDimension(R.dimen.bottom_navigation_notification_margin_top_classic);
+				break;
+			case SHOW_WHEN_ACTIVE:
+				if (selectedPosition == position || items.size() == MIN_ITEMS) {
+					notificationInactiveMarginTop = (int) resources.getDimension(R.dimen.bottom_navigation_notification_margin_top_classic);
+				} else {
+					notificationInactiveMarginTop = (int) resources.getDimension(R.dimen.bottom_navigation_notification_margin_top);
+				}
+				break;
+			case ALWAYS_HIDE:
+				notificationInactiveMarginTop = (int) resources.getDimension(R.dimen.bottom_navigation_notification_margin_top);
+				break;
+		}
+	}
 
 	////////////
 	// PUBLIC //
