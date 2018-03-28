@@ -5,14 +5,9 @@ Library to implement the Bottom Navigation component from Material Design guidel
 ## Demo
 <img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo1.gif" width="208" height="368" /> <img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo2.gif" width="208" height="368" /> <img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo3.gif" width="208" height="368" /> <img src="https://raw.githubusercontent.com/aurelhubert/ahbottomnavigation/master/demo4.gif" width="208" height="368" />
 
-## What's new (2.1.0) - [Changelog](https://github.com/aurelhubert/ahbottomnavigation/blob/master/CHANGELOG.md)
+## What's new (2.2.0) - [Changelog](https://github.com/aurelhubert/ahbottomnavigation/blob/master/CHANGELOG.md)
 * Update libraries versions
-* Add enable/disable tab state (with custom color)
-* Add new xml attributes (`colored`, `accentColor`, `inactiveColor`, `disableColor`, `coloredActive`, `coloredInactive`)
-* Add param `notificationAnimationDuration`
-* Update getDrawable method with `AppCompatResources.getDrawable(context, drawableRes);`
-If you use drawable selector and target API < 21, don't forget to add this:
-`AppCompatDelegate.setCompatVectorFromResourcesEnabled(true); `
+* Add another state for titles: `SHOW_WHEN_ACTIVE_FORCE` (PR #313)
 
 ## Features
 * Follow the bottom navigation guidelines (https://www.google.com/design/spec/components/bottom-navigation.html)
@@ -28,7 +23,7 @@ If you use drawable selector and target API < 21, don't forget to add this:
 ### Gradle
 ```groovy
 dependencies {
-    compile 'com.aurelhubert:ahbottomnavigation:2.1.0'
+    compile 'com.aurelhubert:ahbottomnavigation:2.2.0'
 }
 ```
 ### XML
@@ -153,7 +148,7 @@ Feel free to create issues / pull requests.
 ## License
 ```
 AHBottomNavigation library for Android
-Copyright (c) 2017 Aurelien Hubert (http://github.com/aurelhubert).
+Copyright (c) 2018 Aurelien Hubert (http://github.com/aurelhubert).
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

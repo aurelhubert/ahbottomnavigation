@@ -1,6 +1,10 @@
 ## Changelog
 
-### Newest version: 2.1.0
+### Newest version: 2.2.0
+* Update libraries versions
+* Add another state for titles: `SHOW_WHEN_ACTIVE_FORCE` (PR #313)
+
+### 2.1.0
 
 * Update libraries versions
 * Add enable/disable tab state (with custom color)
