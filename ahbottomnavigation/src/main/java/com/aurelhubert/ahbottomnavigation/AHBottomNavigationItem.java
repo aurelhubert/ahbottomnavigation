@@ -7,6 +7,8 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.MenuRes;
 import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -27,6 +29,9 @@ public class AHBottomNavigationItem {
 	private
 	@DrawableRes
 	int drawableRes = 0;
+	private
+	@IdRes
+	int menuId = 0;
 	private
 	@ColorRes
 	int colorRes = 0;
@@ -90,6 +95,34 @@ public class AHBottomNavigationItem {
 		this.drawable = drawable;
 		this.color = color;
 	}
+
+	/**
+	 * Constructor
+	 *
+	 * @param menuId   MenuId
+	 * @param title    String
+	 * @param drawable Drawable
+	 * @param color    Color
+	 */
+	public AHBottomNavigationItem(@IdRes int menuId, String title, Drawable drawable, @ColorInt int color) {
+		this.menuId = menuId;
+		this.title = title;
+		this.drawable = drawable;
+		this.color = color;
+	}
+
+	/**
+	 * Constructor
+	 *
+	 * @param menuId   MenuId
+	 * @param title    String
+	 * @param drawable Drawable
+	 */
+	public AHBottomNavigationItem(@IdRes int menuId, String title, Drawable drawable) {
+		this.menuId = menuId;
+		this.title = title;
+		this.drawable = drawable;
+	}
 	
 	public String getTitle(Context context) {
 		if (titleRes != 0) {
@@ -144,5 +177,9 @@ public class AHBottomNavigationItem {
 	public void setDrawable(Drawable drawable) {
 		this.drawable = drawable;
 		this.drawableRes = 0;
+	}
+
+	public int getMenuId() {
+		return this.menuId;
 	}
 }
