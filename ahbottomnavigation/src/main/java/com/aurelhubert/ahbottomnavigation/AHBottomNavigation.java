@@ -1209,6 +1209,35 @@ public class AHBottomNavigation extends FrameLayout {
 	}
 
 	/**
+	 * Get position by menu id
+	 *
+	 * @param menuId
+	 * @return Item position with given menu id
+	 */
+	public Integer getPositionByMenuId(int menuId) {
+		for (int i = 0; i < items.size(); i++) {
+			if (items.get(i).getMenuId() == menuId)
+				return i;
+		}
+		return null;
+	}
+
+	
+	/**
+	 * Get item with given menu id
+	 *
+	 * @param menuId int: menuId specified in menu XML
+	 * @return The item with given menu id
+	 */
+	public AHBottomNavigationItem getItemWithMenuId(int menuId) {
+		Integer position = getPositionByMenuId(menuId);
+		if(position != null) {
+			return getItem(position);
+		}
+		return null;
+	}
+	
+	/**
 	 * Get the current item
 	 *
 	 * @return The current item position
@@ -1247,6 +1276,26 @@ public class AHBottomNavigation extends FrameLayout {
 		}
 	}
 
+	/**
+	 * Set the current item
+	 *
+	 * @param menuId int: menu id
+	 */
+	public void setCurrentItemByMenuId(int menuId) { setCurrentItemByMenuId(menuId, true);}
+	
+	/**
+	 * Set the current item
+	 *
+	 * @param menuId int: menu id
+	 * @param useCallback boolean: use or not the callback
+	 */
+	public void setCurrentItemByMenuId(int menuId, boolean useCallback) {
+		Integer position = getPositionByMenuId(menuId);
+		if(position != null) {
+			setCurrentItem(position, useCallback);
+		}
+	}
+	
 	/**
 	 * Return if the behavior translation is enabled
 	 *
@@ -1607,6 +1656,19 @@ public class AHBottomNavigation extends FrameLayout {
 	}
 	
 	/**
+	 * Get the view with given menuId
+	 * @param menuId int
+	 * @return The view with the menuId, or null
+	 */
+	public View getViewByMenuId(int menuId) {
+		Integer position = getPositionByMenuId(menuId);
+		if(position != null) {
+			return getViewAtPosition(position);
+		}
+		return null;
+	}
+	
+	/**
 	 * Enable the tab item at the given position
 	 * @param position int
 	 */
@@ -1618,7 +1680,18 @@ public class AHBottomNavigation extends FrameLayout {
 		itemsEnabledStates[position] = true;
 		createItems();
 	}
-	
+
+	/**
+	 * Enable the tab item with the given menu id
+	 * @param menuId int
+	 */
+	public void enableItemWithMenuId(int menuId) {
+		Integer position = getPositionByMenuId(menuId);
+		if(position != null) {
+			enableItemAtPosition(position);
+		}
+	}
+
 	/**
 	 * Disable the tab item at the given position
 	 * @param position int
@@ -1632,6 +1705,17 @@ public class AHBottomNavigation extends FrameLayout {
 		createItems();
 	}
 	
+	/**
+	 * Disable the tab item with the given menu id
+	 * @param menuId int
+	 */
+	public void disableItemWithMenuId(int menuId) {
+		Integer position = getPositionByMenuId(menuId);
+		if(position != null) {
+			disableItemAtPosition(position);
+		}
+	}
+
 	/**
 	 * Set the item disable color
 	 * @param itemDisableColor int
