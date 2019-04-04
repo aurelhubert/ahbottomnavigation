@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/bottom_navigation_height"
-    android:background="@drawable/item_background"
+    android:background="@drawable/bottom_navigation_item_background"
     android:minWidth="@dimen/bottom_navigation_min_width">
 
     <ImageView
@@ -38,7 +38,7 @@
         android:layout_marginLeft="@dimen/bottom_navigation_notification_margin_left"
         android:layout_marginTop="@dimen/bottom_navigation_notification_margin_top"
         android:alpha="0"
-        android:background="@drawable/notification_background"
+        android:background="@drawable/bottom_navigation_notification_background"
         android:elevation="@dimen/bottom_navigation_notification_elevation"
         android:gravity="center"
         android:minWidth="@dimen/bottom_navigation_notification_width"

@@ -939,7 +939,7 @@ public class AHBottomNavigation extends FrameLayout {
 					}
 
 				} else if (currentBackgroundColor != 0) {
-					Drawable defautlDrawable = ContextCompat.getDrawable(context, R.drawable.notification_background);
+					Drawable defautlDrawable = ContextCompat.getDrawable(context, R.drawable.bottom_navigation_notification_background);
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 						notification.setBackground(AHHelper.getTintDrawable(defautlDrawable,
 								currentBackgroundColor, forceTint));
