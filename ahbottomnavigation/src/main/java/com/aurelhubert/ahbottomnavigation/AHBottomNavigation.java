@@ -351,7 +351,7 @@ public class AHBottomNavigation extends FrameLayout {
     private boolean isClassic() {
         return titleState != TitleState.ALWAYS_HIDE &&
 				titleState != TitleState.SHOW_WHEN_ACTIVE_FORCE &&
-				(items.size() == MIN_ITEMS || titleState == TitleState.ALWAYS_SHOW);
+				(items.size() <= MIN_ITEMS || titleState == TitleState.ALWAYS_SHOW);
     }
 
 	/**
@@ -481,7 +481,7 @@ public class AHBottomNavigation extends FrameLayout {
 				view.setEnabled(false);
 			}
 
-			LayoutParams params = new LayoutParams((int) itemWidth, (int) height);
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((int) itemWidth, (int) height, 0.3f);
 			linearLayout.addView(view, params);
 			views.add(view);
 		}
@@ -618,7 +618,7 @@ public class AHBottomNavigation extends FrameLayout {
 				width = (int) (itemWidth * 1.16);
 			}
 
-			LayoutParams params = new LayoutParams(width, (int) height);
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, (int) height, 0.3f);
 			linearLayout.addView(view, params);
 			views.add(view);
 		}
@@ -1240,7 +1240,7 @@ public class AHBottomNavigation extends FrameLayout {
 
 		if (titleState != TitleState.ALWAYS_HIDE &&
 				titleState != TitleState.SHOW_WHEN_ACTIVE_FORCE &&
-				(items.size() == MIN_ITEMS || titleState == TitleState.ALWAYS_SHOW)) {
+				(items.size() <= MIN_ITEMS || titleState == TitleState.ALWAYS_SHOW)) {
 			updateItems(position, useCallback);
 		} else {
 			updateSmallItems(position, useCallback);
